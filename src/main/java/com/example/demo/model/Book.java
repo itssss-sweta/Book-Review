@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "book")
+@Table(name = "books")
 public class Book {
 
     @Id
@@ -18,7 +18,7 @@ public class Book {
     private String bookTitle;
 
     @Column(nullable = false)
-    private String bId;
+    private long bId;
 
     @Column (nullable =  false)
     private String authorName;
@@ -38,12 +38,12 @@ public class Book {
         this.bookTitle = bookTitle;
     }
 
-    public String getBId() {
+    public long getBId() {
         return bId;
     }
 
-    public void setBId(String bId) {
-        this.bId = bId;
+    public void setBId(long serialNumber) {
+        this.bId = serialNumber;
     }
 
     public String getAuthorName() {
