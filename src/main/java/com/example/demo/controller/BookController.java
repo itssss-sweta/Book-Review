@@ -44,7 +44,8 @@ public class BookController {
       if (deleteStatus) {
             return ResponseEntity.ok("Product with ID " + id + " has been deleted successfully");
         } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete product with ID " + id);
+          return  ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body("Book with ID " + id + " does not exist."); 
         }
     }
 }

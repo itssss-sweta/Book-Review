@@ -32,8 +32,13 @@ public class BookService {
 
     public boolean deleteBook(long id){
         try{
-            bookRepository.deleteById(id);
-            return true;
+            if(bookRepository.existsById(id)){
+                bookRepository.deleteById(id);
+                return true;
+            }
+            else{
+                return false;
+            }
         }
         catch( Exception e){
             throw new RuntimeException("Failed to delete book: " + e.getMessage());
