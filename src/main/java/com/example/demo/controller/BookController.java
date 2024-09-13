@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.handler.ResponseHandler;
 import com.example.demo.model.Book;
 import com.example.demo.service.BookService;
 
@@ -27,25 +28,28 @@ public class BookController {
 
 
     @GetMapping
-    public ResponseEntity<List<Book>> getAllBooks(){
+    public ResponseEntity<Object> getAllBooks(){
         List<Book> fetchBooks = bookService.getBook();
-        return ResponseEntity.ok(fetchBooks);
+        return ResponseHandler.generateResponse("Successfully Retrieved!", HttpStatus.OK, fetchBooks);
     }
 
     @PostMapping
-    public ResponseEntity<Book> createBook(@RequestBody Book book){
+    public ResponseEntity<Object> createBook(@RequestBody Book book){
         Book postBook = bookService.postBook(book);
-        return ResponseEntity.ok(postBook);
+        return ResponseHandler.generateResponse("Successfully Posted!", HttpStatus.CREATED, postBook);
+
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteBook(@PathVariable long id){
+    public ResponseEntity<Object> deleteBook(@PathVariable long id){
       boolean deleteStatus = bookService.deleteBook(id);
       if (deleteStatus) {
-            return ResponseEntity.ok("Product with ID " + id + " has been deleted successfully");
-        } else {
-          return  ResponseEntity.status(HttpStatus.NOT_FOUND)
-            .body("Book with ID " + id + " does not exist."); 
+        String successMessage = "Product with ID " +  id +" has been deleted successfully";
+        return ResponseHandler.generateResponse(successMessage, HttpStatus.OK, null);
+        
+    } else {
+        String errorMessage = "Book with ID " + id + " does not exist.";
+        return ResponseHandler.generateResponse(errorMessage, HttpStatus.NOT_FOUND, null);
         }
     }
 }
