@@ -1,5 +1,7 @@
 package com.example.demo.service;
 import java.util.List;
+
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import com.example.demo.model.Book;
 import com.example.demo.repository.BookRepository;
@@ -45,4 +47,24 @@ public class BookService {
         }
     }
     
+
+    public Book updateBook(long id,Book newBook){
+        try{
+        Optional<Book> bookWithId = bookRepository.findById(id);
+        if(bookWithId.isPresent()){
+            Book book = bookWithId.get();
+            book.setAuthorName(newBook.getAuthorName());
+            book.setBId(newBook.getBId());
+            book.setBookTitle(newBook.getBookTitle());
+            book.setPrice(newBook.getPrice());
+            return bookRepository.save(book);
+        }
+        else{
+            throw new RuntimeException("Book not found with id " + id);
+        }
+    }
+    catch(Exception e){
+            throw new RuntimeException("Book not found with id " + id);
+        }
+    }
 }

@@ -16,7 +16,7 @@ public class ResponseHandler {
         if (responseObj != null) {
             map.put("data", responseObj);
         } else {
-            map.put("data", null); // or you could choose not to add "data" at all
+            map.put("data", null); 
         }
 
         

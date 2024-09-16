@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,6 +38,14 @@ public class BookController {
     public ResponseEntity<Object> createBook(@RequestBody Book book){
         Book postBook = bookService.postBook(book);
         return ResponseHandler.generateResponse("Successfully Posted!", HttpStatus.CREATED, postBook);
+
+    }
+
+
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<Object> updateBook(@PathVariable long id, @RequestBody Book book){
+        Book updateBook = bookService.updateBook(id,book);
+        return ResponseHandler.generateResponse("Successfully Updated!", HttpStatus.CREATED, updateBook);
 
     }
 
