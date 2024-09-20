@@ -1,6 +1,20 @@
 package com.example.demo.model;
-import jakarta.persistence.*;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "books")
 public class Book {
@@ -15,47 +29,10 @@ public class Book {
     @Column(nullable = false)
     private long bId;
 
-    @Column (nullable =  false)
+    @Column(nullable = false)
     private String authorName;
 
     @Column(nullable = false)
     private double price;
-
-    public long getId() {
-        return id;
-    }
-
-    public String getBookTitle() {
-        return bookTitle;
-    }
-
-    public void setBookTitle(String bookTitle) {
-        this.bookTitle = bookTitle;
-    }
-
-    public long getBId() {
-        return bId;
-    }
-
-    public void setBId(long serialNumber) {
-        this.bId = serialNumber;
-    }
-
-    public String getAuthorName() {
-        return authorName;
-    }
-
-    public void setAuthorName(String authorName) {
-        this.authorName = authorName;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
 
 }
