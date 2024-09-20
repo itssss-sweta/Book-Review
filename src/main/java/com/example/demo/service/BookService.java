@@ -92,7 +92,7 @@ public class BookService {
                 if (newBook.getBookTitle() == null || newBook.getBookTitle().isEmpty()) {
                     return ResponseUtil.badRequestResponse("Book title cannot be empty.");
                 }
-    
+                // TODO: validate bid length    
                 book.setAuthorName(newBook.getAuthorName());
                 book.setBId(newBook.getBId());
                 book.setBookTitle(newBook.getBookTitle());
