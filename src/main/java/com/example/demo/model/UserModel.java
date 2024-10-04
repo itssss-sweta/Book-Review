@@ -1,7 +1,11 @@
 package com.example.demo.model;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -15,7 +19,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,29 +33,49 @@ import lombok.Setter;
 public class UserModel implements UserDetails {
 
     @Id
-    @Column(name = "user_id")
+    @Column(name = "user_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long uid;
 
     @NotBlank(message = "Name cannot be empty.")
     @Column(name = "username")
-    private String name;
+    private String fullName;
 
     @Email(message = "Invalid Email Format.")
     @NotBlank(message = "Email is Required.")
+    @Column(unique = true, nullable = false)
     private String email;
 
     @NotBlank(message = "Password is Required.")
-    @Size(min = 6, max = 24, message = "Password must be between 6 to 24 characters.")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    private String role;
+    @CreationTimestamp
+    @Column(updatable = false, name = "created_at")
+    private Date createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private Date updatedAt;
+
+    public UserModel setFullName(String name) {
+        this.fullName = name;
+        return this;
+    }
+
+    public UserModel setEmail(String email) {
+        this.email = email;
+        return this;
+    }
+
+    public UserModel setPassword(String password) {
+        this.password = password;
+        return this;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAuthorities'");
+        return List.of();
     }
 
     @Override
@@ -60,4 +83,23 @@ public class UserModel implements UserDetails {
         return email;
     }
 
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

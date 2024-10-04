@@ -4,30 +4,34 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.model.LoginResponseModel;
 import com.example.demo.model.ResponseModel;
 import com.example.demo.model.UserModel;
-import com.example.demo.service.UserService;
+import com.example.demo.service.AuthenticationService;
 
+import dtos.LoginDto;
+import dtos.RegisterDto;
 import jakarta.validation.Valid;
 
+@RestController
 @RequestMapping("/api/auth")
 public class UserController {
 
-    private final UserService userService;
+    private final AuthenticationService authenticationService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserController(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<ResponseModel<UserModel>> signUpUser(@Valid @RequestBody UserModel newUser) {
-        return userService.signUp(newUser);
+    public ResponseEntity<ResponseModel<UserModel>> signUpUser(@Valid @RequestBody RegisterDto newUser) {
+        return authenticationService.signUp(newUser);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseModel<UserModel>> login(@Valid @RequestBody String email,
-            @RequestBody String password) {
-        return userService.login(email, password);
+    public ResponseEntity<ResponseModel<LoginResponseModel>> login(@Valid @RequestBody LoginDto credentials) {
+        return authenticationService.login(credentials);
     }
 }
