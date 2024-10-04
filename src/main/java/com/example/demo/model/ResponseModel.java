@@ -7,10 +7,12 @@ import lombok.Setter;
 @Getter
 public class ResponseModel<T> {
     private String message;
-    private int status;
+    private int statusCode;
+    private Boolean status;
     private T data;
 
-    public ResponseModel(int status, String message, T data) {
+    public ResponseModel(int statusCode, String message, T data, Boolean status) {
+        this.statusCode = statusCode;
         this.status = status;
         this.message = message;
         this.data = data;
