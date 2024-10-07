@@ -48,6 +48,7 @@ public class UserModel implements UserDetails {
 
     @NotBlank(message = "Password is Required.")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Column(nullable = false)
     private String password;
 
     @CreationTimestamp

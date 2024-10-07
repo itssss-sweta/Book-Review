@@ -68,7 +68,7 @@ public class AuthenticationService {
             if (user != null && passwordEncoder.matches(input.getPassword(), user.getPassword())) {
                 String jwtToken = jwtService.generateToken(user);
                 LoginResponseModel loginResponseModel = new LoginResponseModel().setToken(jwtToken)
-                        .setExpiresIn(jwtService.getExpirationTime());
+                        .setExpiresIn(jwtService.getExpirationTime()).setUserModel(user);
 
                 return ResponseUtil.successResponse(loginResponseModel, "Login succesful!");
             } else if (user != null && !passwordEncoder.matches(input.getPassword(), user.getPassword())) {
