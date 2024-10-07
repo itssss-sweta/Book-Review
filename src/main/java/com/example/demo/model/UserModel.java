@@ -2,20 +2,27 @@ package com.example.demo.model;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -59,6 +66,29 @@ public class UserModel implements UserDetails {
     @Column(name = "updated_at")
     private Date updatedAt;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "favourite_books", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "book_id"))
+    @JsonIgnore
+    private Set<Book> favouriteBooks = new HashSet<>();
+
+    public Set<Book> getFavouriteBooks() {
+        return favouriteBooks;
+    }
+
+    public void setFavouriteBooks(Set<Book> favouriteBooks) {
+        this.favouriteBooks = favouriteBooks;
+    }
+
+    public void addFavoriteBook(Book book) {
+        this.favouriteBooks.add(book);
+        book.getFavoritedByUsers().add(this);
+    }
+
+    public void removeFavoriteBook(Book book) {
+        this.favouriteBooks.remove(book);
+        book.getFavoritedByUsers().remove(this);
+    }
+
     public UserModel setFullName(String name) {
         this.fullName = name;
         return this;
@@ -72,6 +102,10 @@ public class UserModel implements UserDetails {
     public UserModel setPassword(String password) {
         this.password = password;
         return this;
+    }
+
+    public Set<Book> getFavoriteBooks() {
+        return favouriteBooks;
     }
 
     @Override
