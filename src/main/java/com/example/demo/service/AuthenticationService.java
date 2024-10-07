@@ -8,25 +8,25 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import com.example.demo.dtos.LoginDto;
+import com.example.demo.dtos.RegisterDto;
 import com.example.demo.model.LoginResponseModel;
 import com.example.demo.model.ResponseModel;
 import com.example.demo.model.UserModel;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.AuthenticationRepository;
 import com.example.demo.utils.ResponseUtil;
 
-import dtos.LoginDto;
-import dtos.RegisterDto;
 import jakarta.validation.Valid;
 
 @Service
 public class AuthenticationService {
 
-    private final UserRepository userRepository;
+    private final AuthenticationRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
-    public AuthenticationService(UserRepository userRepository, PasswordEncoder passwordEncoder,
+    public AuthenticationService(AuthenticationRepository userRepository, PasswordEncoder passwordEncoder,
             AuthenticationManager authenticationManager, JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;

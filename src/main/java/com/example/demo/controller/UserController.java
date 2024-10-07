@@ -1,37 +1,38 @@
 package com.example.demo.controller;
 
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.model.LoginResponseModel;
+import com.example.demo.model.Book;
 import com.example.demo.model.ResponseModel;
-import com.example.demo.model.UserModel;
-import com.example.demo.service.AuthenticationService;
-
-import dtos.LoginDto;
-import dtos.RegisterDto;
-import jakarta.validation.Valid;
+import com.example.demo.service.UserService;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/users")
 public class UserController {
 
-    private final AuthenticationService authenticationService;
+    @Autowired
+    private UserService userService;
 
-    public UserController(AuthenticationService authenticationService) {
-        this.authenticationService = authenticationService;
+    @PostMapping("/add-favourite/{bookId}")
+    public ResponseEntity<ResponseModel<Book>> addFavourite(@RequestHeader("Authorization") String token,
+            @PathVariable Long bookId) {
+        String jwtToken = token.substring(7);
+        return userService.addFavouriteBook(jwtToken, bookId);
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<ResponseModel<UserModel>> signUpUser(@Valid @RequestBody RegisterDto newUser) {
-        return authenticationService.signUp(newUser);
+    @GetMapping("/get-favourites")
+    public ResponseEntity<ResponseModel<Set<Book>>> getFavourites(@RequestHeader("Authorization") String token) {
+        String jwtToken = token.substring(7);
+        return userService.getFavouriteBooks(jwtToken);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<ResponseModel<LoginResponseModel>> login(@Valid @RequestBody LoginDto credentials) {
-        return authenticationService.login(credentials);
-    }
 }
