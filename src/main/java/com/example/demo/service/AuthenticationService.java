@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -43,14 +44,13 @@ public class AuthenticationService {
                 return ResponseUtil
                         .conflictResponse(String.format("User with the email '%s' already exists.", email));
             }
-            System.out.println("Password Length: " + newUser.getPassword().length());
             UserModel user = new UserModel()
                     .setFullName(newUser.getFullName())
                     .setEmail(newUser.getEmail())
                     .setPassword(passwordEncoder.encode(newUser.getPassword()));
 
             UserModel registerUser = userRepository.save(user);
-            return ResponseUtil.createdResponse(registerUser, "Registeration succesful!");
+            return ResponseUtil.createdResponse(registerUser, "Registeration successful.");
         } catch (Exception e) {
             return ResponseUtil.serverErrorResponse("An error occurred while registering user: " + e.getMessage());
         }
@@ -63,23 +63,22 @@ public class AuthenticationService {
                             input.getEmail(),
                             input.getPassword()));
             UserModel user = userRepository.findByEmail(input.getEmail())
-                    .orElseThrow();
-
+                    .orElse(null);
             if (user != null && passwordEncoder.matches(input.getPassword(), user.getPassword())) {
                 String jwtToken = jwtService.generateToken(user);
                 LoginResponseModel loginResponseModel = new LoginResponseModel().setToken(jwtToken)
                         .setExpiresIn(jwtService.getExpirationTime()).setUserModel(user);
 
-                return ResponseUtil.successResponse(loginResponseModel, "Login succesful!");
-            } else if (user != null && !passwordEncoder.matches(input.getPassword(), user.getPassword())) {
-                return ResponseUtil.unauthorizedResponse("Invalid Credentials!");
-
+                return ResponseUtil.successResponse(loginResponseModel, "Login successful!");
             }
             return ResponseUtil
                     .notFoundResponse(String.format("User with the email '%s' doesn/'t' exists.", input.getEmail()));
 
+        } catch (BadCredentialsException e) {
+            return ResponseUtil.unauthorizedResponse("Invalid Credentials!");
         } catch (Exception e) {
-            return ResponseUtil.serverErrorResponse("An error occurred while registering user: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseUtil.serverErrorResponse("An error occurred while logging in: " + e.getMessage());
         }
     }
 

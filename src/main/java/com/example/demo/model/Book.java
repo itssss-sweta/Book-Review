@@ -26,8 +26,8 @@ public class Book {
     @Column(nullable = false)
     private String bookTitle;
 
-    @Column(nullable = false)
-    private long bId;
+    @Column(nullable = false, unique = true)
+    private long isbn;
 
     @Column(nullable = false)
     private String authorName;
