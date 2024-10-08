@@ -32,7 +32,7 @@ public class Book {
     @Column(nullable = false)
     private String bookTitle;
 
-    @Column(nullable = false, unique = true, name = "Isbn Number")
+    @Column(nullable = false, unique = true, name = "isbn_number")
     private long isbn;
 
     @Column(nullable = false)
