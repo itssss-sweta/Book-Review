@@ -3,9 +3,11 @@ package com.example.demo.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dtos.BookDto;
 import com.example.demo.model.Book;
 import com.example.demo.model.ResponseModel;
 import com.example.demo.repository.BookRepository;
@@ -19,8 +21,13 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
-    public ResponseEntity<ResponseModel<Book>> postBook(Book book) {
+    public ResponseEntity<ResponseModel<Book>> postBook(BookDto bookDto) {
         try {
+            Book book = new Book();
+            book.setBookTitle(bookDto.getBookTitle());
+            book.setIsbn(bookDto.getIsbn());
+            book.setAuthorName(bookDto.getAuthorName());
+            book.setPrice(bookDto.getPrice());
             if (book.getAuthorName() == null || book.getAuthorName().isEmpty()) {
                 return ResponseUtil.badRequestResponse("Author name cannot be empty.");
             }
@@ -31,12 +38,13 @@ public class BookService {
                 return ResponseUtil.badRequestResponse("Price must be greater than zero.");
             }
             if (book.getIsbn() <= 0) {
-                return ResponseUtil.badRequestResponse("BId must be greater than zero");
+                return ResponseUtil.badRequestResponse("Isbn Number must be greater than zero");
             }
 
             Book savedBook = bookRepository.save(book);
             return ResponseUtil.createdResponse(savedBook, "Book successfully created!");
-
+        } catch (DataIntegrityViolationException e) {
+            return ResponseUtil.conflictResponse("ISBN Number already exists");
         } catch (Exception e) {
             return ResponseUtil.serverErrorResponse("An error occurred while creating the book: " + e.getMessage());
         }
@@ -75,7 +83,7 @@ public class BookService {
         }
     }
 
-    public ResponseEntity<ResponseModel<Book>> updateBook(long id, Book newBook) {
+    public ResponseEntity<ResponseModel<Book>> updateBook(long id, BookDto newBook) {
         try {
             if (id <= 0) {
                 return ResponseUtil.badRequestResponse("Invalid book ID provided.");
@@ -104,6 +112,8 @@ public class BookService {
             } else {
                 return ResponseUtil.notFoundResponse("Book not found with ID " + id);
             }
+        } catch (DataIntegrityViolationException e) {
+            return ResponseUtil.conflictResponse("ISBN Number already exists");
         } catch (IllegalArgumentException e) {
             return ResponseUtil.badRequestResponse("Invalid data provided: " + e.getMessage());
         } catch (Exception e) {
