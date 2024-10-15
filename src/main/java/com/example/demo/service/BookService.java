@@ -37,8 +37,8 @@ public class BookService {
             if (book.getPrice() <= 0) {
                 return ResponseUtil.badRequestResponse("Price must be greater than zero.");
             }
-            if (book.getIsbn() <= 0) {
-                return ResponseUtil.badRequestResponse("Isbn Number must be greater than zero");
+            if (book.getIsbn() <= 9 || book.getIsbn() > 10) {
+                return ResponseUtil.badRequestResponse("Isbn number should be 10 digits.");
             }
 
             Book savedBook = bookRepository.save(book);
@@ -100,7 +100,10 @@ public class BookService {
                 if (newBook.getBookTitle() == null || newBook.getBookTitle().isEmpty()) {
                     return ResponseUtil.badRequestResponse("Book title cannot be empty.");
                 }
-                // TODO: validate bid length
+                // TODO: donot let isbn number change
+                if (newBook.getIsbn() <= 9 && newBook.getIsbn() > 10) {
+                    return ResponseUtil.badRequestResponse("Isbn number should be 10 digits.");
+                }
                 book.setAuthorName(newBook.getAuthorName());
                 book.setIsbn(newBook.getIsbn());
                 book.setBookTitle(newBook.getBookTitle());
