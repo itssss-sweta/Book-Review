@@ -1,4 +1,6 @@
 import 'package:book_review/src/core/styles/app_colors.dart';
+import 'package:book_review/src/features/authentication/presentation/pages/login_page.dart';
+import 'package:book_review/src/features/authentication/presentation/pages/register_page.dart';
 import 'package:book_review/src/features/authentication/presentation/widgets/bottom_clipper.dart';
 import 'package:book_review/src/shared/presentation/widgets/base_primary_button.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +52,7 @@ class WelcomePage extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -78,11 +80,21 @@ class WelcomePage extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 50),
-                const BasePrimaryButton(
+                BasePrimaryButton(
                   label: 'Get Started',
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const RegisterPage(),
+                    ));
+                  },
                 ),
                 const SizedBox(height: 15),
                 BasePrimaryButton(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const LoginPage(),
+                    ));
+                  },
                   label: 'I Already Have an Account',
                   buttonColor: AppColors.cardColor,
                   textColor: AppColors.primaryTextColor,

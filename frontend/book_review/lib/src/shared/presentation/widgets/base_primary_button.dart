@@ -17,24 +17,29 @@ class BasePrimaryButton extends StatelessWidget {
   /// The color of the button's text. Defaults to `AppColors.white`.
   final Color? textColor;
 
+  /// The function that gets called when the button is pressed.
+  final VoidCallback? onPressed;
+
   /// Constructor for the BasePrimaryButton widget.
   ///
   /// * [label] is required and defines the text on the button.
   /// * [buttonColor] sets the background color of the button, with a default value.
   /// * [borderColor] sets the border color, with a fallback to a partially transparent primary text color.
   /// * [textColor] sets the color of the text, defaulting to white.
+  /// * [onPressed] is the function to handle button presses, with a default empty function.
   const BasePrimaryButton({
     super.key,
     required this.label,
     this.buttonColor = AppColors.secondaryColor,
     this.borderColor,
     this.textColor = AppColors.white,
+    required this.onPressed,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () {},
+      onPressed: onPressed,
       style: ButtonStyle(
         alignment: Alignment.center,
         shape: WidgetStatePropertyAll(
