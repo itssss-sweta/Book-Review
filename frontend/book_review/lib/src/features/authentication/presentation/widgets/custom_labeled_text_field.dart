@@ -32,14 +32,13 @@ class CustomLabeledTextField extends StatelessWidget {
               text: label,
               style: Theme.of(context).textTheme.labelLarge,
               children: [
-                if (isRequired!)
-                  TextSpan(
-                    text: ' *',
-                    style: Theme.of(context)
-                        .textTheme
-                        .labelLarge
-                        ?.copyWith(color: AppColors.errorColor),
-                  ),
+                TextSpan(
+                  text: (isRequired!) ? ' *' : '',
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelLarge
+                      ?.copyWith(color: AppColors.errorColor),
+                ),
               ]),
         ),
         BaseTextField(
