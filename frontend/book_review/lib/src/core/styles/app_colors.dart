@@ -29,4 +29,11 @@ class AppColors {
 
   /// Red
   static const Color errorColor = Color(0xFFEF4444);
+
+  /// White
+  static const Color white = Color(0xFFFFFFFF);
+
+  // Buttons Colors
+  /// Muted Gray
+  static const Color disabledButtonColor = Color(0xFFD1D5DB);
 }
