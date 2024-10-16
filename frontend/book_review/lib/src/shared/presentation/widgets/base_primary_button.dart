@@ -20,6 +20,12 @@ class BasePrimaryButton extends StatelessWidget {
   /// The function that gets called when the button is pressed.
   final VoidCallback? onPressed;
 
+  /// Height of button.
+  final double? buttonHeight;
+
+  /// Width of button.
+  final double? buttonWidth;
+
   /// Constructor for the BasePrimaryButton widget.
   ///
   /// * [label] is required and defines the text on the button.
@@ -34,6 +40,8 @@ class BasePrimaryButton extends StatelessWidget {
     this.borderColor,
     this.textColor = AppColors.white,
     required this.onPressed,
+    this.buttonHeight,
+    this.buttonWidth,
   });
 
   @override
@@ -50,8 +58,9 @@ class BasePrimaryButton extends StatelessWidget {
               ),
               borderRadius: const BorderRadius.all(Radius.circular(28))),
         ),
-        fixedSize: WidgetStatePropertyAll(
-            Size(MediaQuery.sizeOf(context).width / 1.2, 50)),
+        fixedSize: WidgetStatePropertyAll(Size(
+            buttonWidth ?? MediaQuery.sizeOf(context).width / 1.2,
+            buttonHeight ?? 50)),
         backgroundColor: WidgetStatePropertyAll(buttonColor),
       ),
       child: Text(
