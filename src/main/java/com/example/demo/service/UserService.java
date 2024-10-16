@@ -45,7 +45,7 @@ public class UserService {
             }
             user.addFavoriteBook(book);
             userRepository.save(user);
-            return ResponseUtil.successResponse(null, "Book added to favorites.");
+            return ResponseUtil.successResponse(null, book.getBookTitle() + " added to favorites.");
 
         } catch (Exception e) {
             return ResponseUtil.serverErrorResponse("An unexpected error occurred: " + e.getMessage());
@@ -59,5 +59,34 @@ public class UserService {
         Set<Book> favouriteBooks = user.getFavouriteBooks();
 
         return ResponseUtil.successResponse(favouriteBooks, "Favorite books retrieved successfully.");
+    }
+
+    public ResponseEntity<ResponseModel<Book>> removeFavouriteBook(String token, long bookId) {
+        try {
+            String username = jwtService.extractUsername(token);
+            if (username == null) {
+                return ResponseUtil.unauthorizedResponse("Invalid or expired token.");
+            }
+            UserModel user = userRepository.findByEmail(username)
+                    .orElse(null);
+            if (user == null) {
+                return ResponseUtil.notFoundResponse("User not found with email: " + username);
+            }
+            Book book = bookRepository.findById(bookId)
+                    .orElse(null);
+            if (book == null) {
+                return ResponseUtil.notFoundResponse("Book not found with ID: " + bookId);
+            }
+
+            if (user.getFavouriteBooks().contains(book)) {
+                user.removeFavoriteBook(book);
+                userRepository.save(user);
+                return ResponseUtil.successResponse(null, book.getBookTitle() + " removed from favorites.");
+            } else {
+                return ResponseUtil.notFoundResponse("Book is not in the user's favorites.");
+            }
+        } catch (Exception e) {
+            return ResponseUtil.serverErrorResponse("An unexpected error occurred: " + e.getMessage());
+        }
     }
 }

@@ -100,7 +100,6 @@ public class BookService {
                 if (newBook.getBookTitle() == null || newBook.getBookTitle().isEmpty()) {
                     return ResponseUtil.badRequestResponse("Book title cannot be empty.");
                 }
-                // TODO: donot let isbn number change
                 if (newBook.getIsbn() <= 9 && newBook.getIsbn() > 10) {
                     return ResponseUtil.badRequestResponse("Isbn number should be 10 digits.");
                 }
