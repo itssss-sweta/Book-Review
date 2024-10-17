@@ -35,7 +35,7 @@ public class AuthenticationService {
         this.jwtService = jwtService;
     }
 
-    public ResponseEntity<ResponseModel<UserModel>> signUp(@Valid @RequestBody RegisterDto newUser) {
+    public ResponseEntity<ResponseModel<UserDto>> signUp(@Valid @RequestBody RegisterDto newUser) {
         try {
             String email = newUser.getEmail();
             UserModel existingUser = userRepository.findByEmail(email)
@@ -51,7 +51,13 @@ public class AuthenticationService {
                     .setPassword(passwordEncoder.encode(newUser.getPassword()));
 
             UserModel registerUser = userRepository.save(user);
-            return ResponseUtil.createdResponse(registerUser, "Registeration successful.");
+            UserDto userDto = new UserDto();
+            userDto.setUid(registerUser.getUid());
+            userDto.setFullName(registerUser.getFullName());
+            userDto.setEmail(registerUser.getEmail());
+            userDto.setCreatedAt(registerUser.getCreatedAt());
+            userDto.setUpdatedAt(registerUser.getUpdatedAt());
+            return ResponseUtil.createdResponse(userDto, "Registeration successful.");
         } catch (Exception e) {
             return ResponseUtil.serverErrorResponse("An error occurred while registering user: " + e.getMessage());
         }

@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dtos.LoginDto;
 import com.example.demo.dtos.RegisterDto;
+import com.example.demo.dtos.UserDto;
 import com.example.demo.model.LoginResponseModel;
 import com.example.demo.model.ResponseModel;
-import com.example.demo.model.UserModel;
 import com.example.demo.service.AuthenticationService;
 
 import jakarta.validation.Valid;
@@ -26,7 +26,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<ResponseModel<UserModel>> signUpUser(@Valid @RequestBody RegisterDto newUser) {
+    public ResponseEntity<ResponseModel<UserDto>> signUpUser(@Valid @RequestBody RegisterDto newUser) {
         return authenticationService.signUp(newUser);
     }
 
