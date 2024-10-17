@@ -45,9 +45,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
-            response.getWriter()
-                    .write("{\"error\": \"Authorization header is missing or does not start with 'Bearer '\"}");
-
+            response.getWriter().write("{"
+                    + "\"message\": \"Authorization header is missing or does not start with 'Bearer '\","
+                    + "\"statusCode\": 401,"
+                    + "\"success\": false,"
+                    + "\"error\": \"Unauthorized\""
+                    + "}");
             return;
         }
         try {
@@ -65,7 +68,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 } else {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     response.setContentType("application/json");
-                    response.getWriter().write("{\"error\": \"Invalid JWT token\"}");
+                    response.getWriter().write("{"
+                            + "\"message\": \"Invalid JWT token.\","
+                            + "\"statusCode\": 401,"
+                            + "\"success\": false,"
+                            + "\"error\": \"Unauthorized\""
+                            + "}");
                     return;
                 }
 
@@ -74,12 +82,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (ExpiredJwtException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
-            response.getWriter().write("{\"error\": \"JWT token has expired\"}");
+            response.getWriter().write("{"
+                    + "\"message\": \"JWT token has expired.\","
+                    + "\"statusCode\": 401,"
+                    + "\"success\": false,"
+                    + "\"error\": \"Unauthorized\""
+                    + "}");
         } catch (Exception exception) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.setContentType("application/json");
-            response.getWriter()
-                    .write("{\"error\": \"An error occurred during authentication: " + exception.getMessage() + "\"}");
+            response.getWriter().write("{"
+                    + "\"message\": \"An error occurred during authentication: " + exception.getMessage() + "\","
+                    + "\"statusCode\": 500,"
+                    + "\"success\": false,"
+                    + "\"error\": \"Internal Server Error\""
+                    + "}");
         }
     }
 }
