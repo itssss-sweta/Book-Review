@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.demo.dtos.LoginDto;
 import com.example.demo.dtos.RegisterDto;
+import com.example.demo.dtos.UserDto;
 import com.example.demo.model.LoginResponseModel;
 import com.example.demo.model.ResponseModel;
 import com.example.demo.model.UserModel;
@@ -64,13 +65,29 @@ public class AuthenticationService {
                             input.getPassword()));
             UserModel user = userRepository.findByEmail(input.getEmail())
                     .orElse(null);
-            if (user != null && passwordEncoder.matches(input.getPassword(), user.getPassword())) {
-                String jwtToken = jwtService.generateToken(user);
-                LoginResponseModel loginResponseModel = new LoginResponseModel().setToken(jwtToken)
-                        .setExpiresIn(jwtService.getExpirationTime()).setUserModel(user);
 
+            if (user != null && passwordEncoder.matches(input.getPassword(), user.getPassword())) {
+                // Generate the JWT token
+                String jwtToken = jwtService.generateToken(user);
+
+                // Map UserModel to UserDto (remove sensitive fields like password)
+                UserDto userDto = new UserDto();
+                userDto.setUid(user.getUid());
+                userDto.setFullName(user.getFullName());
+                userDto.setEmail(user.getEmail());
+                userDto.setCreatedAt(user.getCreatedAt());
+                userDto.setUpdatedAt(user.getUpdatedAt());
+
+                // Prepare the login response
+                LoginResponseModel loginResponseModel = new LoginResponseModel()
+                        .setToken(jwtToken)
+                        .setExpiresIn(jwtService.getExpirationTime())
+                        .setUserModel(userDto); // Set UserDto, not UserModel
+
+                // Return success response
                 return ResponseUtil.successResponse(loginResponseModel, "Login successful!");
             }
+
             return ResponseUtil
                     .notFoundResponse(String.format("User with the email '%s' doesn/'t' exists.", input.getEmail()));
 

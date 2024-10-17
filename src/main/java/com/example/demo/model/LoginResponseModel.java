@@ -1,9 +1,14 @@
 package com.example.demo.model;
 
+import com.example.demo.dtos.UserDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class LoginResponseModel {
     private String token;
+
+    @JsonIgnore
     private long expiresIn;
-    private UserModel userModel;
+    private UserDto userModel;
 
     public String getToken() {
         return token;
@@ -13,7 +18,7 @@ public class LoginResponseModel {
         return expiresIn;
     }
 
-    public UserModel getUser() {
+    public UserDto getDetail() {
         return userModel;
     }
 
@@ -27,7 +32,7 @@ public class LoginResponseModel {
         return this;
     }
 
-    public LoginResponseModel setUserModel(UserModel userModel) {
+    public LoginResponseModel setUserModel(UserDto userModel) {
         this.userModel = userModel;
         return this;
     }
