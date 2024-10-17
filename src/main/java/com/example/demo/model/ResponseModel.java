@@ -1,5 +1,7 @@
 package com.example.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,13 +10,27 @@ import lombok.Setter;
 public class ResponseModel<T> {
     private String message;
     private int statusCode;
-    private Boolean status;
+    private Boolean success;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private T data;
 
-    public ResponseModel(int statusCode, String message, T data, Boolean status) {
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String error;
+
+    public ResponseModel(int statusCode, String message, T data) {
         this.statusCode = statusCode;
-        this.status = status;
+        this.success = true;
         this.message = message;
         this.data = data;
+        this.error = null;
+    }
+
+    public ResponseModel(int statusCode, String error, String message) {
+        this.statusCode = statusCode;
+        this.success = false;
+        this.message = message;
+        this.data = null;
+        this.error = error;
     }
 }
