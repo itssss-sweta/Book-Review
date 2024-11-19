@@ -41,6 +41,8 @@ public class Book {
     @Column(nullable = false)
     private double price;
 
+    private String imageUrl;
+
     @ManyToMany(mappedBy = "favouriteBooks")
     @JsonIgnore
     private Set<UserModel> favoritedByUsers = new HashSet<>();
