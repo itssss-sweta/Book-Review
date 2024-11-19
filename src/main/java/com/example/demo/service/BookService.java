@@ -6,28 +6,41 @@ import java.util.Optional;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.dtos.BookDto;
 import com.example.demo.model.Book;
+import com.example.demo.model.ImageModel;
 import com.example.demo.model.ResponseModel;
 import com.example.demo.repository.BookRepository;
+import com.example.demo.repository.ImageRepository;
+import com.example.demo.utils.ImageUtils;
 import com.example.demo.utils.ResponseUtil;
 
 @Service
 public class BookService {
     private final BookRepository bookRepository;
+    private final ImageRepository imageRepository;
 
-    public BookService(BookRepository bookRepository) {
+    public BookService(BookRepository bookRepository, ImageRepository imageRepository) {
         this.bookRepository = bookRepository;
+        this.imageRepository = imageRepository;
     }
 
-    public ResponseEntity<ResponseModel<Book>> postBook(BookDto bookDto) {
+    public ResponseEntity<ResponseModel<Book>> postBook(BookDto bookDto, MultipartFile imageFile) {
         try {
+            var imageToSave = ImageModel.builder().imageName(imageFile.getOriginalFilename())
+                    .imageBytes(ImageUtils.compressImage(imageFile.getBytes())).build();
+            ImageModel savedImage = imageRepository.save(imageToSave);
+            // Generate Image URL
+            String imageUrl = "/images/" + savedImage.getImageId();
+
             Book book = new Book();
             book.setBookTitle(bookDto.getBookTitle());
             book.setIsbn(bookDto.getIsbn());
             book.setAuthorName(bookDto.getAuthorName());
             book.setPrice(bookDto.getPrice());
+            book.setImageUrl(imageUrl);
             if (book.getAuthorName() == null || book.getAuthorName().isEmpty()) {
                 return ResponseUtil.badRequestResponse("Author name cannot be empty.");
             }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.dtos.BookDto;
 import com.example.demo.model.Book;
@@ -33,8 +34,9 @@ public class BookController {
   }
 
   @PostMapping
-  public ResponseEntity<ResponseModel<Book>> createBook(@RequestBody BookDto book) {
-    return bookService.postBook(book);
+  public ResponseEntity<ResponseModel<Book>> createBook(@RequestBody BookDto book,
+      @RequestBody MultipartFile imagFile) {
+    return bookService.postBook(book, imagFile);
   }
 
   @PutMapping("/edit/{id}")
