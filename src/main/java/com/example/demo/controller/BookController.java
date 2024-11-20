@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import java.util.List;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,10 +35,14 @@ public class BookController {
     return bookService.getBook();
   }
 
-  @PostMapping
-  public ResponseEntity<ResponseModel<Book>> createBook(@RequestBody BookDto book,
-      @RequestBody MultipartFile imagFile) {
-    return bookService.postBook(book, imagFile);
+  @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+  public ResponseEntity<ResponseModel<Book>> createBook(@RequestPart("book") BookDto book,
+      @RequestPart("imageFile") MultipartFile imageFile) {
+    System.out.println("POSTING");
+    if (imageFile != null)
+      System.out.println(imageFile);
+    System.out.println(book);
+    return bookService.postBook(book, imageFile);
   }
 
   @PutMapping("/edit/{id}")
