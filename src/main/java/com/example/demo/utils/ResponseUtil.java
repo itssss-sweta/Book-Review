@@ -49,6 +49,13 @@ public class ResponseUtil {
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
+    // 415 Conflict
+    public static <T> ResponseEntity<ResponseModel<T>> unsupportedMediaTypeResponse(String message) {
+        ResponseModel<T> response = new ResponseModel<>(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(),
+                "Unsupported Media Type", message);
+        return new ResponseEntity<>(response, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+    }
+
     // 500 Internal Server Error
     public static <T> ResponseEntity<ResponseModel<T>> serverErrorResponse(String message) {
         ResponseModel<T> response = new ResponseModel<>(HttpStatus.INTERNAL_SERVER_ERROR.value(),
