@@ -45,12 +45,33 @@ public class BookService {
             book.setIsbn(bookDto.getIsbn());
             book.setAuthorName(bookDto.getAuthorName());
             book.setPrice(bookDto.getPrice());
+            book.setDescription(bookDto.getDescription());
+            book.setEdition(bookDto.getEdition());
+            book.setGenres(bookDto.getGenres());
+            book.setPageCount(bookDto.getPageCount());
+            book.setPublicationYear(bookDto.getPublicationYear());
+            book.setPublisher(bookDto.getPublisher());
+            book.setRating(bookDto.getRating());
 
             // Validate book fields
             if (book.getAuthorName() == null || book.getAuthorName().isEmpty()) {
                 return ResponseUtil.badRequestResponse("Author name cannot be empty.");
             } else if (book.getBookTitle() == null || book.getBookTitle().isEmpty()) {
                 return ResponseUtil.badRequestResponse("Book title cannot be empty.");
+            } else if (book.getDescription() == null || book.getDescription().isEmpty()) {
+                return ResponseUtil.badRequestResponse("Description cannot be empty.");
+            } else if (book.getEdition() == null || book.getEdition().isEmpty()) {
+                return ResponseUtil.badRequestResponse("Edtion cannot be empty.");
+            } else if (book.getGenres() == null || book.getGenres().isEmpty()) {
+                return ResponseUtil.badRequestResponse("Genres cannot be empty.");
+            } else if (book.getPageCount() <= 0) {
+                return ResponseUtil.badRequestResponse("Page Count cannot be negative.");
+            } else if (book.getPublicationYear() < 1500) {
+                return ResponseUtil.badRequestResponse("Invalid year.");
+            } else if (book.getPublisher() == null || book.getPublisher().isEmpty()) {
+                return ResponseUtil.badRequestResponse("Publishers cannot be empty.");
+            } else if (book.getRating() <= 0 || book.getRating() > 5) {
+                return ResponseUtil.badRequestResponse("Rating should be inn range between 0-5.");
             } else if (book.getPrice() <= 0) {
                 return ResponseUtil.badRequestResponse("Price must be greater than zero.");
             }
