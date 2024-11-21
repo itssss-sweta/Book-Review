@@ -7,7 +7,7 @@ import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
 public class ImageUtils {
-    public static final int BITE_SIZE = 4 * 1024;
+    public static final int BITE_SIZE = 4 * 1024 * 1024;
 
     public static byte[] compressImage(byte[] data) throws IOException {
         Deflater deflater = new Deflater();

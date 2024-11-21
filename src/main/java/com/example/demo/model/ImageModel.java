@@ -30,6 +30,7 @@ public class ImageModel {
     private String imageName;
 
     @Lob
+    @Column(columnDefinition = "LONGBLOB")
     private byte[] imageBytes;
 
 }

@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class BookDto {
     private String bookTitle;
-    private long isbn;
+    private String isbn;
     private String authorName;
     private double price;
 }
