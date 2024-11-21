@@ -17,6 +17,8 @@ import com.example.demo.repository.ImageRepository;
 import com.example.demo.utils.ImageUtils;
 import com.example.demo.utils.ResponseUtil;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class BookService {
     private final BookRepository bookRepository;
@@ -27,33 +29,38 @@ public class BookService {
         this.imageRepository = imageRepository;
     }
 
+    @Transactional
     public ResponseEntity<ResponseModel<Book>> postBook(BookDto bookDto, MultipartFile imageFile) {
         try {
-            var imageToSave = ImageModel.builder().imageName(imageFile.getOriginalFilename())
-                    .imageBytes(ImageUtils.compressImage(imageFile.getBytes())).build();
-            ImageModel savedImage = imageRepository.save(imageToSave);
-            // Generate Image URL
-            String imageUrl = "/images/" + savedImage.getImageId();
-
+            if (imageFile.getBytes().length > ImageUtils.BITE_SIZE) {
+                return ResponseUtil.badRequestResponse("Image size exceeds the maximum allowed limit.");
+            }
+            byte[] compressedImage = ImageUtils.compressImage(imageFile.getBytes());
+            var imageToSave = ImageModel.builder()
+                    .imageName(imageFile.getOriginalFilename())
+                    .imageBytes(compressedImage)
+                    .build();
             Book book = new Book();
             book.setBookTitle(bookDto.getBookTitle());
             book.setIsbn(bookDto.getIsbn());
             book.setAuthorName(bookDto.getAuthorName());
             book.setPrice(bookDto.getPrice());
-            book.setImageUrl(imageUrl);
+
+            // Validate book fields
             if (book.getAuthorName() == null || book.getAuthorName().isEmpty()) {
                 return ResponseUtil.badRequestResponse("Author name cannot be empty.");
-            }
-            if (book.getBookTitle() == null || book.getBookTitle().isEmpty()) {
+            } else if (book.getBookTitle() == null || book.getBookTitle().isEmpty()) {
                 return ResponseUtil.badRequestResponse("Book title cannot be empty.");
-            }
-            if (book.getPrice() <= 0) {
+            } else if (book.getPrice() <= 0) {
                 return ResponseUtil.badRequestResponse("Price must be greater than zero.");
             }
-            if (book.getIsbn() <= 9 || book.getIsbn() > 10) {
-                return ResponseUtil.badRequestResponse("Isbn number should be 10 digits.");
+            if (String.valueOf(book.getIsbn()).length() != 10) {
+                System.out.println("Invalid ISBN: " + book.getIsbn());
+                return ResponseUtil.badRequestResponse("ISBN number should be exactly 10 digits.");
             }
-
+            ImageModel savedImage = imageRepository.save(imageToSave);
+            String imageUrl = "/images/" + savedImage.getImageId();
+            book.setImageUrl(imageUrl);
             Book savedBook = bookRepository.save(book);
             return ResponseUtil.createdResponse(savedBook, "Book successfully created!");
         } catch (DataIntegrityViolationException e) {
@@ -113,8 +120,9 @@ public class BookService {
                 if (newBook.getBookTitle() == null || newBook.getBookTitle().isEmpty()) {
                     return ResponseUtil.badRequestResponse("Book title cannot be empty.");
                 }
-                if (newBook.getIsbn() <= 9 && newBook.getIsbn() > 10) {
-                    return ResponseUtil.badRequestResponse("Isbn number should be 10 digits.");
+                if (String.valueOf(book.getIsbn()).length() != 10) {
+                    System.out.println("Invalid ISBN: " + book.getIsbn());
+                    return ResponseUtil.badRequestResponse("ISBN number should be exactly 10 digits.");
                 }
                 book.setAuthorName(newBook.getAuthorName());
                 book.setIsbn(newBook.getIsbn());
