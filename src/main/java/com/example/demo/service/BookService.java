@@ -10,28 +10,38 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.dtos.BookDto;
 import com.example.demo.model.Book;
+import com.example.demo.model.Genre;
 import com.example.demo.model.ImageModel;
 import com.example.demo.model.ResponseModel;
 import com.example.demo.repository.BookRepository;
+import com.example.demo.repository.GenreRepository;
 import com.example.demo.repository.ImageRepository;
 import com.example.demo.utils.ImageUtils;
 import com.example.demo.utils.ResponseUtil;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 
 @Service
 public class BookService {
     private final BookRepository bookRepository;
     private final ImageRepository imageRepository;
+    private final GenreRepository genreRepository;
 
-    public BookService(BookRepository bookRepository, ImageRepository imageRepository) {
+    public BookService(BookRepository bookRepository, ImageRepository imageRepository,
+            GenreRepository genreRepository) {
         this.bookRepository = bookRepository;
         this.imageRepository = imageRepository;
+        this.genreRepository = genreRepository;
     }
 
     @Transactional
-    public ResponseEntity<ResponseModel<Book>> postBook(BookDto bookDto, MultipartFile imageFile) {
+    public ResponseEntity<ResponseModel<Book>> postBook(@Valid BookDto bookDto, MultipartFile imageFile,
+            List<Long> genreIds) {
         try {
+            if (bookRepository.existsByIsbn(bookDto.getIsbn())) {
+                return ResponseUtil.conflictResponse("ISBN number already exists.");
+            }
             if (imageFile.getBytes().length > ImageUtils.BITE_SIZE) {
                 return ResponseUtil.badRequestResponse("Image size exceeds the maximum allowed limit.");
             }
@@ -47,45 +57,22 @@ public class BookService {
             book.setPrice(bookDto.getPrice());
             book.setDescription(bookDto.getDescription());
             book.setEdition(bookDto.getEdition());
-            book.setGenres(bookDto.getGenres());
             book.setPageCount(bookDto.getPageCount());
             book.setPublicationYear(bookDto.getPublicationYear());
             book.setPublisher(bookDto.getPublisher());
             book.setRating(bookDto.getRating());
-
-            // Validate book fields
-            if (book.getAuthorName() == null || book.getAuthorName().isEmpty()) {
-                return ResponseUtil.badRequestResponse("Author name cannot be empty.");
-            } else if (book.getBookTitle() == null || book.getBookTitle().isEmpty()) {
-                return ResponseUtil.badRequestResponse("Book title cannot be empty.");
-            } else if (book.getDescription() == null || book.getDescription().isEmpty()) {
-                return ResponseUtil.badRequestResponse("Description cannot be empty.");
-            } else if (book.getEdition() == null || book.getEdition().isEmpty()) {
-                return ResponseUtil.badRequestResponse("Edtion cannot be empty.");
-            } else if (book.getGenres() == null || book.getGenres().isEmpty()) {
-                return ResponseUtil.badRequestResponse("Genres cannot be empty.");
-            } else if (book.getPageCount() <= 0) {
-                return ResponseUtil.badRequestResponse("Page Count cannot be negative.");
-            } else if (book.getPublicationYear() < 1500) {
-                return ResponseUtil.badRequestResponse("Invalid year.");
-            } else if (book.getPublisher() == null || book.getPublisher().isEmpty()) {
-                return ResponseUtil.badRequestResponse("Publishers cannot be empty.");
-            } else if (book.getRating() <= 0 || book.getRating() > 5) {
-                return ResponseUtil.badRequestResponse("Rating should be inn range between 0-5.");
-            } else if (book.getPrice() <= 0) {
-                return ResponseUtil.badRequestResponse("Price must be greater than zero.");
+            List<Genre> genres = genreRepository.findAllById(genreIds);
+            if (genres.isEmpty()) {
+                return ResponseUtil.notFoundResponse("Invalid genres provided");
             }
-            if (String.valueOf(book.getIsbn()).length() != 10) {
-                System.out.println("Invalid ISBN: " + book.getIsbn());
-                return ResponseUtil.badRequestResponse("ISBN number should be exactly 10 digits.");
-            }
+            book.setGenres(genres);
             ImageModel savedImage = imageRepository.save(imageToSave);
             String imageUrl = "/images/" + savedImage.getImageId();
             book.setImageUrl(imageUrl);
             Book savedBook = bookRepository.save(book);
             return ResponseUtil.createdResponse(savedBook, "Book successfully created!");
         } catch (DataIntegrityViolationException e) {
-            return ResponseUtil.conflictResponse("ISBN Number already exists");
+            return ResponseUtil.conflictResponse("ISBN number already exists.");
         } catch (Exception e) {
             return ResponseUtil.serverErrorResponse("An error occurred while creating the book: " + e.getMessage());
         }

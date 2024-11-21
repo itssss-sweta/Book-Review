@@ -11,23 +11,30 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.dtos.BookDto;
 import com.example.demo.model.Book;
+import com.example.demo.model.Genre;
 import com.example.demo.model.ResponseModel;
 import com.example.demo.service.BookService;
+import com.example.demo.service.GenreService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/books")
 public class BookController {
 
   final BookService bookService;
+  final GenreService genreService;
 
-  public BookController(BookService bookService) {
+  public BookController(BookService bookService, GenreService genreService) {
     this.bookService = bookService;
+    this.genreService = genreService;
   }
 
   @GetMapping
@@ -36,13 +43,13 @@ public class BookController {
   }
 
   @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-  public ResponseEntity<ResponseModel<Book>> createBook(@RequestPart("book") BookDto book,
-      @RequestPart("imageFile") MultipartFile imageFile) {
+  public ResponseEntity<ResponseModel<Book>> createBook(@Valid @RequestPart("book") BookDto book,
+      @RequestPart("imageFile") MultipartFile imageFile, @RequestParam("genreIds") List<Long> genreIds) {
     System.out.println("POSTING");
     if (imageFile != null)
       System.out.println(imageFile);
     System.out.println(book);
-    return bookService.postBook(book, imageFile);
+    return bookService.postBook(book, imageFile, genreIds);
   }
 
   @PutMapping("/edit/{id}")
@@ -54,5 +61,26 @@ public class BookController {
   @DeleteMapping("/{id}")
   public ResponseEntity<ResponseModel<Book>> deleteBook(@PathVariable long id) {
     return bookService.deleteBook(id);
+  }
+
+  @PostMapping("/genres")
+  public ResponseEntity<ResponseModel<Genre>> addGenre(@RequestBody Genre genre) {
+    return genreService.createGenre(genre);
+  }
+
+  @GetMapping("/genres")
+  public ResponseEntity<ResponseModel<List<Genre>>> getAllGenres() {
+    return genreService.getAllGenres();
+
+  }
+
+  @GetMapping("/genres/{genreId}")
+  public ResponseEntity<ResponseModel<Genre>> getGenreById(@PathVariable Long genreId) {
+    return genreService.getGenreById(genreId);
+  }
+
+  @DeleteMapping("/genres/{genreId}")
+  public ResponseEntity<ResponseModel<Genre>> deleteGenreById(@PathVariable Long genreId) {
+    return genreService.deleteGenreById(genreId);
   }
 }

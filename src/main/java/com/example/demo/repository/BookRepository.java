@@ -7,4 +7,5 @@ import com.example.demo.model.Book;
 
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
+    boolean existsByIsbn(String isbn);
 }
