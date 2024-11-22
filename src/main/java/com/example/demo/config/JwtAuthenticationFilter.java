@@ -37,7 +37,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String requestURI = request.getRequestURI();
 
         // Skip JWT authentication for any public route
-        if (requestURI.startsWith("/api/auth/")) {
+        if (requestURI.startsWith("/api/auth/") ||
+                requestURI.startsWith("/login/admin") || requestURI.startsWith("/static/") ||
+                requestURI.startsWith("/js/") ||
+                requestURI.startsWith("/favicon.ico") || requestURI.startsWith("/images/")) {
             filterChain.doFilter(request, response);
             return;
         }

@@ -38,6 +38,9 @@ public class SecurityConfig {
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+            .requestMatchers("/login/admin", "/static/**", "/css/**", "/js/**", "/images/**",
+                "/favicon.ico")
+            .permitAll()
             .requestMatchers("/error").permitAll()
             .anyRequest().authenticated())
         .authenticationProvider(authenticationProvider)
