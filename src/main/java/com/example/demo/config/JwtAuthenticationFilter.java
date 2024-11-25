@@ -18,6 +18,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -45,19 +46,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
-            response.getWriter().write("{"
-                    + "\"message\": \"Authorization header is missing or does not start with 'Bearer '\","
-                    + "\"statusCode\": 401,"
-                    + "\"success\": false,"
-                    + "\"error\": \"Unauthorized\""
-                    + "}");
-            return;
-        }
         try {
-            final String jwt = authHeader.substring(7);
+            String jwt = null;
+
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                jwt = authHeader.substring(7);
+            } else {
+                HttpSession session = request.getSession(false);
+                if (session != null) {
+                    jwt = (String) session.getAttribute("auth_token");
+                }
+            }
+            System.out.println("TOKEN: " + jwt);
+            if (jwt == null) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.getWriter().write("{"
+                        + "\"message\": \"Token is missing.\","
+                        + "\"statusCode\": 401,"
+                        + "\"success\": false,"
+                        + "\"error\": \"Unauthorized\""
+                        + "}");
+                return;
+            }
+
             final String userEmail = jwtService.extractUsername(jwt);
 
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
