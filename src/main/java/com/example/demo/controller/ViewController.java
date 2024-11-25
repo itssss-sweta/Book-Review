@@ -13,6 +13,8 @@ import com.example.demo.model.LoginResponseModel;
 import com.example.demo.model.ResponseModel;
 import com.example.demo.service.AuthenticationService;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class ViewController {
     @Autowired
@@ -28,10 +30,9 @@ public class ViewController {
         return "dashboard";
     }
 
-    // Handle the login form submission
     @PostMapping("/login/admin")
     public String loginUser(@RequestParam("email") String email,
-            @RequestParam("password") String password,
+            @RequestParam("password") String password, HttpSession session,
             Model model) {
         LoginDto credentials = new LoginDto();
         credentials.setEmail(email);
@@ -39,12 +40,12 @@ public class ViewController {
         ResponseEntity<ResponseModel<LoginResponseModel>> response = authenticationService.login(credentials);
 
         if (response.getStatusCode().is2xxSuccessful()) {
-            model.addAttribute("sucessMessage", response.getBody().getMessage());
+            String token = response.getBody().getData().getToken();
+            session.setAttribute("auth_token", token);
             return "redirect:/dashboard";
         } else {
             model.addAttribute("errorMessage", response.getBody().getMessage());
             return "login";
         }
     }
-
 }
