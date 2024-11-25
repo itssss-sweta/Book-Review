@@ -48,4 +48,15 @@ public class ViewController {
             return "login";
         }
     }
+
+    @GetMapping("/addBook")
+    public String addBookPage() {
+        return "addBook";
+    }
+
+    @GetMapping("/getBooks")
+    public String getBooksPage() {
+        return "getBooks";
+    }
+
 }
