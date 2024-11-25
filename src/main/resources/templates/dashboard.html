@@ -4,8 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <style>
+      body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column; 
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2em;
+            margin-top: 20px; 
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            background-color: #eeedeb;
+            color: black;
+            border: #f8ab05 2px solid;
+            border-radius: 4px;
+            cursor: pointer;
+            align-content: center;
+            text-align: center;
+        }
+
+        button:hover {
+            background-color: #f8ab05;
+        }
+
+        button + button {
+            margin-top: 5px;
+        }
+
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
 </head>
 <body>
     <h1>DASHBOARD</h1>
+    <div class="buttons">
+        <button type="button" th:onclick="|window.location.href='/addBook'|">Add Book</button>
+        <button type="button" th:onclick="|window.location.href='/getBooks'|">View Books</button>
+    </div>
 </body>
 </html>
