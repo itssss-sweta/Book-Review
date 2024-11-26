@@ -217,8 +217,6 @@
             }
 
         }
-
-
     </style>
 </head>
 <body>
@@ -241,10 +239,22 @@
             </div>
             <div class="form-container">
                 <form action="" method="POST">
-                    <!-- Name of Book -->
-                    <div class="form-group">
-                        <label for="bookName">Name of Book</label>
-                        <input type="text" id="bookName" name="bookName" placeholder="Enter book title" required>
+                    <div class="form-row">
+                        <div class="image-upload-container" onclick="document.getElementById('image-upload').click()">
+                            <input type="file" id="image-upload" accept="image/*" onchange="previewImage(event)" hidden>
+                            <div id="image-content">
+                                <img id="image-preview" class="image-preview" src="" alt="">
+                                <div id="image-placeholder" class="image-placeholder">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Upload an image</p>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="form-group book-name-container">
+                            <label for="bookName">Name of Book</label>
+                            <input type="text" id="bookName" name="bookName" placeholder="Enter book title" required>
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -339,7 +349,7 @@
     </div>
 
     <script>
-         function updateSelectedGenres() {
+        function updateSelectedGenres() {
             var genreSelect = document.getElementById('genres');
             var selectedGenre = genreSelect.options[genreSelect.selectedIndex].text;
 
@@ -355,7 +365,26 @@
         function removeGenre(genreElement) {
             genreElement.parentElement.remove();
         }
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('image-preview');
+            const placeholder = document.getElementById('image-placeholder');
+            const container = document.querySelector('.image-upload-container');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    preview.style.opacity = '1';
+                    placeholder.classList.add('hidden');
+                    container.classList.add('image-selected');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
     </script>
-    
 </body>
 </html>
