@@ -1,5 +1,8 @@
 package com.example.demo.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -9,9 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.dtos.LoginDto;
+import com.example.demo.model.Genre;
 import com.example.demo.model.LoginResponseModel;
 import com.example.demo.model.ResponseModel;
 import com.example.demo.service.AuthenticationService;
+import com.example.demo.service.GenreService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -19,6 +24,8 @@ import jakarta.servlet.http.HttpSession;
 public class ViewController {
     @Autowired
     private AuthenticationService authenticationService;
+    @Autowired
+    private GenreService genreService;
 
     @GetMapping("/login/admin")
     public String loginPage() {
@@ -50,13 +57,25 @@ public class ViewController {
     }
 
     @GetMapping("/addBook")
-    public String addBookPage() {
+    public String addBookPage(Model model) {
+        getGenres(model);
         return "addBook";
     }
 
     @GetMapping("/getBooks")
     public String getBooksPage() {
         return "getBooks";
+    }
+
+    private String getGenres(Model model) {
+        ResponseEntity<ResponseModel<List<Genre>>> response = genreService.getAllGenres();
+        if (response.getStatusCode().is2xxSuccessful()) {
+            List<Genre> genres = response.getBody().getData();
+            model.addAttribute("genres", genres);
+        } else {
+            model.addAttribute("genres", new ArrayList<>());
+        }
+        return "genreForm";
     }
 
 }
