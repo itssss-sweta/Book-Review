@@ -4,8 +4,358 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Books</title>
+    <style>
+        /* Basic reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Full-page container for admin layout */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fc;
+            color: #333;
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Main wrapper */
+        .wrapper {
+            display: flex;
+            flex: 1;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar styling */
+        .sidebar {
+            background-color: #2c3e50;
+            color: white;
+            width: 250px;
+            padding: 20px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            overflow-y: auto; 
+        }
+
+        .sidebar h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 15px;
+        }
+
+        .sidebar ul li a {
+            color: #ecf0f1;
+            text-decoration: none;
+            font-size: 18px;
+            display: block;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .sidebar ul li a:hover {
+            background-color: #34495e;
+        }
+
+        /* Main content area */
+        .main-content {
+            flex: 1;
+            margin-left: 250px; 
+            padding: 30px;
+            background-color: #ecf0f5;
+            overflow-y: auto; 
+            height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #34495e;
+            margin-bottom: 20px;
+        }
+
+        /* Form styling */
+        .form-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Form group styling */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-size: 16px;
+            font-weight: bold;
+            color: #34495e;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .form-group input, .form-group select, .form-group textarea{
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            transition: border 0.3s ease-in-out;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: #34495e;
+            outline: none;
+        }
+
+        /* Submit button styling */
+        button {
+            background-color: #34495e;
+            color: white;
+            font-size: 16px;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        button:hover {
+            background-color: #2c3e50;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 150px; 
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: #34495e;
+            outline: none;
+        }
+
+        .selected-genre-container {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .selected-genre {
+            display: inline-block;
+            background-color: #ffffff;
+            padding: 5px 10px;
+            margin: 5px;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #333;
+            border: 1px solid #ccc;
+        }
+
+        .disabled-selection {
+            color: #aaa;  
+        }
+
+
+        .remove {
+            margin-left: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            color: red;
+        }
+
+        .remove:hover {
+            color: darkred;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .main-content {
+                margin-left: 200px;
+            }
+
+            .form-container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .form-group input, .form-group select, button {
+                font-size: 14px;
+            }
+
+        }
+
+
+    </style>
 </head>
 <body>
-    <h1>Post Books</h1>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h2>Admin Panel</h2>
+            <ul>
+                <li><a th.href="/dashboard">Dashboard</a></li>
+                <li><a href="#">Books</a></li>
+                <li><a href="#">Users</a></li>
+                <li><a href="#">Settings</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <div class="header">
+                <h1>Add New Book</h1>
+            </div>
+            <div class="form-container">
+                <form action="" method="POST">
+                    <!-- Name of Book -->
+                    <div class="form-group">
+                        <label for="bookName">Name of Book</label>
+                        <input type="text" id="bookName" name="bookName" placeholder="Enter book title" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="genres">Select Genre</label>
+                        <select id="genres" name="genres" onchange="updateSelectedGenres()">
+                            <option class="disabled-selection" value="" disabled selected>Select Genre</option>
+                            <option th:each="genre : ${genres}" th:value="${genre.genreId}" th:text="${genre.name}"></option>
+                        </select>
+                    </div>
+                
+                    <!-- Selected genres container (genres selected by the user will appear here) -->
+                    <div class="form-group">
+                        <div class="selected-genre-container" id="selected-genres">
+                            <div th:each="selectedGenre : ${selectedGenres}" class="selected-genre">
+                                <span th:text="${selectedGenre}"></span>
+                                <span class="remove">x</span>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <!-- ISBN Number -->
+                    <div class="form-group">
+                        <label for="isbn">ISBN Number</label>
+                        <input type="number" id="isbn" name="isbn" placeholder="Enter ISBN Number" maxlength="10" minlength="10" required>
+                    </div>
+
+                    <!-- Author Name -->
+                    <div class="form-group">
+                        <label for="author">Author Name</label>
+                        <input type="text" id="author" name="author" placeholder="Enter author name" required>
+                    </div>
+
+                    <!-- Price -->
+                    <div class="form-group">
+                        <label for="price">Price ($)</label>
+                        <input type="number" id="price" name="price" placeholder="$" required>
+                    </div>
+
+                    <!-- Rating -->
+                    <div class="form-group">
+                        <label for="rating">Rating</label>
+                        <select name="rating" id="rating">
+                            <option class="disabled-selection" value="" disabled selected>Select Rating</option>
+                            <option value="1.0">1.0</option>
+                            <option value="2.0">2.0</option>
+                            <option value="3.0">3.0</option>
+                            <option value="4.0">4.0</option>
+                            <option value="5.0">5.0</option>
+                        </select>
+                    </div>
+
+                    <!-- Publisher -->
+                    <div class="form-group">
+                        <label for="publisher">Publisher</label>
+                        <input type="text" id="publisher" name="publisher" placeholder="Enter publisher name" required>
+                    </div>
+
+                    <!-- Publication Year -->
+                    <div class="form-group">
+                        <label for="publicationYear">Publication Year</label>
+                        <select id="publicationYear" name="publicationYear" required>
+                            <option class="disabled-selection" value="" disabled selected>Select Year</option>
+                            <option th:each="i : ${#numbers.sequence(1500, 2080)}" th:value="${i}" th:text="${i}"></option>
+                        </select>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description" placeholder="Enter book description" required></textarea>
+                    </div>
+
+                    <!-- Edition -->
+                    <div class="form-group">
+                        <label for="edition">Edition</label>
+                        <input type="text" id="edition" name="edition" placeholder="Enter edition" required>
+                    </div>
+
+                    <!-- Page Count -->
+                    <div class="form-group">
+                        <label for="pageCount">Page Count</label>
+                        <input type="number" id="pageCount" name="pageCount" placeholder="Enter page count" required>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="form-group">
+                        <button type="submit">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+         function updateSelectedGenres() {
+            var genreSelect = document.getElementById('genres');
+            var selectedGenre = genreSelect.options[genreSelect.selectedIndex].text;
+
+            // Create a new div for the selected genre
+            var newGenre = document.createElement('div');
+            newGenre.className = 'selected-genre';
+            newGenre.innerHTML = selectedGenre + '<span class="remove" onclick="removeGenre(this)">x</span>';
+
+            // Append the new genre div to the selected-genres container
+            document.getElementById('selected-genres').appendChild(newGenre);
+        }
+
+        function removeGenre(genreElement) {
+            genreElement.parentElement.remove();
+        }
+    </script>
+    
 </body>
 </html>
