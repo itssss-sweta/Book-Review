@@ -1,24 +1,31 @@
 package com.example.demo.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.example.demo.dtos.BookDto;
 import com.example.demo.dtos.LoginDto;
 import com.example.demo.model.Genre;
 import com.example.demo.model.LoginResponseModel;
 import com.example.demo.model.ResponseModel;
 import com.example.demo.service.AuthenticationService;
+import com.example.demo.service.BookService;
 import com.example.demo.service.GenreService;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 
 @Controller
 public class ViewController {
@@ -26,6 +33,8 @@ public class ViewController {
     private AuthenticationService authenticationService;
     @Autowired
     private GenreService genreService;
+    @Autowired
+    private BookService bookService;
 
     @GetMapping("/login/admin")
     public String loginPage() {
@@ -67,7 +76,7 @@ public class ViewController {
         return "getBooks";
     }
 
-    private String getGenres(Model model) {
+    private void getGenres(Model model) {
         ResponseEntity<ResponseModel<List<Genre>>> response = genreService.getAllGenres();
         if (response.getStatusCode().is2xxSuccessful()) {
             List<Genre> genres = response.getBody().getData();
@@ -75,7 +84,23 @@ public class ViewController {
         } else {
             model.addAttribute("genres", new ArrayList<>());
         }
-        return "genreForm";
+    }
+
+    @PostMapping("/post-book")
+    public String addBook(
+            @Valid @ModelAttribute BookDto bookDto,
+            @RequestParam("imageFile") MultipartFile imageFile,
+            @RequestParam("genres") String genres, Model model) {
+
+        List<Long> genreIds = Arrays.stream(genres.split(","))
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
+        var response = bookService.postBook(bookDto, imageFile, genreIds);
+        model.addAttribute("alert", response.getBody().getMessage());
+        if (response.getStatusCode().is2xxSuccessful()) {
+            return "dashboard";
+        }
+        return "addBook";
     }
 
 }

@@ -26,111 +26,114 @@
                 <h1>Add New Book</h1>
             </div>
             <div class="form-container">
-                <form action="" method="POST">
-                    <div class="form-row">
-                        <div class="image-upload-container" onclick="document.getElementById('image-upload').click()">
-                            <input type="file" id="image-upload" accept="image/*" onchange="previewImage(event)" hidden>
-                            <div id="image-content">
-                                <img id="image-preview" class="image-preview" src="" alt="">
-                                <div id="image-placeholder" class="image-placeholder">
-                                    <i class="fas fa-cloud-upload-alt"></i>
-                                    <p>Upload an image</p>
+                    <form th:action="@{/post-book}" method="POST" enctype="multipart/form-data">
+                        <div class="form-row">
+                            <div class="image-upload-container" onclick="document.getElementById('image-upload').click()">
+                                <input type="file" id="image-upload" accept="image/*" name="imageFile" onchange="previewImage(event)" hidden>
+                                <div id="image-content">
+                                    <img id="image-preview" class="image-preview" src="" alt="">
+                                    <div id="image-placeholder" class="image-placeholder">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <p>Upload an image</p>
+                                    </div>
+                                </div>
+                            </div>
+                    
+                            <div class="form-group book-name-container">
+                                <label for="bookTitle">Name of Book</label>
+                                <input type="text" id="bookTitle" name="bookTitle" placeholder="Enter book title" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="genres">Select Genre</label>
+                            <select id="genres" name="genres" onchange="updateSelectedGenres()">
+                                <option class="disabled-selection" value="" disabled selected>Select Genre</option>
+                                <option th:each="genre : ${genres}" th:value="${genre.genreId}" th:text="${genre.name}"></option>
+                            </select>
+                        </div>
+                    
+                        <!-- Selected genres container (genres selected by the user will appear here) -->
+                        <div class="form-group">
+                            <div class="selected-genre-container" id="selected-genres">
+                                <div th:each="selectedGenre : ${selectedGenres}" class="selected-genre">
+                                    <span th:text="${selectedGenre}"></span>
+                                    <span class="remove">x</span>
                                 </div>
                             </div>
                         </div>
-                    
-                        <div class="form-group book-name-container">
-                            <label for="bookName">Name of Book</label>
-                            <input type="text" id="bookName" name="bookName" placeholder="Enter book title" required>
+                       
+                        <!-- Hidden input field to send selected genre IDs -->
+                        <input type="hidden" id="selected-genre-ids" name="genres" value="">
+
+                        <!-- ISBN Number -->
+                        <div class="form-group">
+                            <label for="isbn">ISBN Number</label>
+                            <input type="number" id="isbn" name="isbn" placeholder="Enter ISBN Number" pattern="\d{10}" title="ISBN must be exactly 10 digits" required>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="genres">Select Genre</label>
-                        <select id="genres" name="genres" onchange="updateSelectedGenres()">
-                            <option class="disabled-selection" value="" disabled selected>Select Genre</option>
-                            <option th:each="genre : ${genres}" th:value="${genre.genreId}" th:text="${genre.name}"></option>
-                        </select>
-                    </div>
-                
-                    <!-- Selected genres container (genres selected by the user will appear here) -->
-                    <div class="form-group">
-                        <div class="selected-genre-container" id="selected-genres">
-                            <div th:each="selectedGenre : ${selectedGenres}" class="selected-genre">
-                                <span th:text="${selectedGenre}"></span>
-                                <span class="remove">x</span>
-                            </div>
+                        <!-- Author Name -->
+                        <div class="form-group">
+                            <label for="authorName">Author Name</label>
+                            <input type="text" id="authorName" name="authorName" placeholder="Enter author name" required>
                         </div>
-                    </div>
-        
-                    <!-- ISBN Number -->
-                    <div class="form-group">
-                        <label for="isbn">ISBN Number</label>
-                        <input type="number" id="isbn" name="isbn" placeholder="Enter ISBN Number" maxlength="10" minlength="10" required>
-                    </div>
 
-                    <!-- Author Name -->
-                    <div class="form-group">
-                        <label for="author">Author Name</label>
-                        <input type="text" id="author" name="author" placeholder="Enter author name" required>
-                    </div>
+                        <!-- Price -->
+                        <div class="form-group">
+                            <label for="price">Price ($)</label>
+                            <input type="number" id="price" name="price" placeholder="$" required>
+                        </div>
 
-                    <!-- Price -->
-                    <div class="form-group">
-                        <label for="price">Price ($)</label>
-                        <input type="number" id="price" name="price" placeholder="$" required>
-                    </div>
+                        <!-- Rating -->
+                        <div class="form-group">
+                            <label for="rating">Rating</label>
+                            <select name="rating" id="rating">
+                                <option class="disabled-selection" value="" disabled selected>Select Rating</option>
+                                <option value="1">1.0</option>
+                                <option value="2">2.0</option>
+                                <option value="3">3.0</option>
+                                <option value="4">4.0</option>
+                                <option value="5">5.0</option>
+                            </select>
+                        </div>
 
-                    <!-- Rating -->
-                    <div class="form-group">
-                        <label for="rating">Rating</label>
-                        <select name="rating" id="rating">
-                            <option class="disabled-selection" value="" disabled selected>Select Rating</option>
-                            <option value="1.0">1.0</option>
-                            <option value="2.0">2.0</option>
-                            <option value="3.0">3.0</option>
-                            <option value="4.0">4.0</option>
-                            <option value="5.0">5.0</option>
-                        </select>
-                    </div>
+                        <!-- Publisher -->
+                        <div class="form-group">
+                            <label for="publisher">Publisher</label>
+                            <input type="text" id="publisher" name="publisher" placeholder="Enter publisher name" required>
+                        </div>
 
-                    <!-- Publisher -->
-                    <div class="form-group">
-                        <label for="publisher">Publisher</label>
-                        <input type="text" id="publisher" name="publisher" placeholder="Enter publisher name" required>
-                    </div>
+                        <!-- Publication Year -->
+                        <div class="form-group">
+                            <label for="publicationYear">Publication Year</label>
+                            <select id="publicationYear" name="publicationYear" required>
+                                <option class="disabled-selection" value="" disabled selected>Select Year</option>
+                                <option th:each="i : ${#numbers.sequence(1500, 2080)}" th:value="${i}" th:text="${i}"></option>
+                            </select>
+                        </div>
 
-                    <!-- Publication Year -->
-                    <div class="form-group">
-                        <label for="publicationYear">Publication Year</label>
-                        <select id="publicationYear" name="publicationYear" required>
-                            <option class="disabled-selection" value="" disabled selected>Select Year</option>
-                            <option th:each="i : ${#numbers.sequence(1500, 2080)}" th:value="${i}" th:text="${i}"></option>
-                        </select>
-                    </div>
+                        <!-- Description -->
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea id="description" name="description" placeholder="Enter book description" required></textarea>
+                        </div>
 
-                    <!-- Description -->
-                    <div class="form-group">
-                        <label for="description">Description</label>
-                        <textarea id="description" name="description" placeholder="Enter book description" required></textarea>
-                    </div>
+                        <!-- Edition -->
+                        <div class="form-group">
+                            <label for="edition">Edition</label>
+                            <input type="text" id="edition" name="edition" placeholder="Enter edition" required>
+                        </div>
 
-                    <!-- Edition -->
-                    <div class="form-group">
-                        <label for="edition">Edition</label>
-                        <input type="text" id="edition" name="edition" placeholder="Enter edition" required>
-                    </div>
+                        <!-- Page Count -->
+                        <div class="form-group">
+                            <label for="pageCount">Page Count</label>
+                            <input type="number" id="pageCount" name="pageCount" placeholder="Enter page count" required>
+                        </div>
 
-                    <!-- Page Count -->
-                    <div class="form-group">
-                        <label for="pageCount">Page Count</label>
-                        <input type="number" id="pageCount" name="pageCount" placeholder="Enter page count" required>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <div class="form-group">
-                        <button type="submit">Submit</button>
-                    </div>
+                        <!-- Submit Button -->
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Add Book</button>
+                      </div>
                 </form>
             </div>
         </div>
