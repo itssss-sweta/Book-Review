@@ -33,9 +33,6 @@
             </div>
 
             <!-- Display error message if present -->
-            <div th:if="${successMessage != null}" class="text-success">
-                <p th:text="${successMessage}"></p>
-            </div>
             <div th:if="${errorMessage != null}" class="text-danger">
                 <p th:text="${errorMessage}"></p>
             </div>

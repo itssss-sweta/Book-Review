@@ -92,15 +92,43 @@ public class ViewController {
             @RequestParam("imageFile") MultipartFile imageFile,
             @RequestParam("genres") String genres, Model model) {
 
+        System.out.println("Posting");
+        String errorMessage = validateImageFile(imageFile, model);
+        if (errorMessage != null) {
+            System.out.println(errorMessage);
+            model.addAttribute("alert", errorMessage); // Set alert message
+            return "addBook"; // Return to the form view if validation fails
+        }
         List<Long> genreIds = Arrays.stream(genres.split(","))
                 .map(Long::parseLong)
                 .collect(Collectors.toList());
         var response = bookService.postBook(bookDto, imageFile, genreIds);
-        model.addAttribute("alert", response.getBody().getMessage());
         if (response.getStatusCode().is2xxSuccessful()) {
             return "dashboard";
         }
+        model.addAttribute("alertMessage", response.getBody().getMessage());
+        model.addAttribute("alertTitle", "Book Upload!");
         return "addBook";
+    }
+
+    private String validateImageFile(MultipartFile imageFile, Model model) {
+        model.addAttribute("alertTitle", "Image Upload!");
+
+        if (imageFile.isEmpty()) {
+            model.addAttribute("alertMessage", "Please upload an image.");
+            return "Please upload an image.";
+        }
+        String fileType = imageFile.getContentType();
+        if (fileType == null || (!fileType.equals("image/jpeg") && !fileType.equals("image/jpg"))) {
+            model.addAttribute("alertMessage", "Only .jpg and .jpeg image files are allowed.");
+            return "Only .jpg and .jpeg image files are allowed.";
+        }
+        long maxSize = 50 * 1024 * 1024; // 5 MB
+        if (imageFile.getSize() > maxSize) {
+            model.addAttribute("alertMessage", "The file size exceeds the 50MB limit.");
+            return "The file size exceeds the 50MB limit.";
+        }
+        return null;
     }
 
 }

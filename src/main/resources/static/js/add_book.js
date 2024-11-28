@@ -55,24 +55,36 @@ function previewImage(event) {
     const preview = document.getElementById('image-preview');
     const placeholder = document.getElementById('image-placeholder');
     const container = document.querySelector('.image-upload-container');
-
+    const note = document.getElementById('file-format-note'); // Error message element
+    
+    // Check if a file is selected and its format
     if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            preview.src = e.target.result;
-            preview.style.display = 'block';
-            preview.style.opacity = '1';
-            placeholder.classList.add('hidden');
-            container.classList.add('image-selected');
-        };
-        reader.readAsDataURL(file);
+        // Check if the file is a .jpg or .jpeg image
+        if (file.type === 'image/jpeg' || file.name.endsWith('.jpg')) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                preview.style.opacity = '1';
+                placeholder.classList.add('hidden');
+                container.classList.add('image-selected');
+                note.style.display = 'none'; // Hide the error note if the format is valid
+            };
+            reader.readAsDataURL(file);
+        } else {
+            // Display error message for unsupported file types
+            note.style.display = 'block';
+            preview.style.display = 'none'; // Hide the preview if the format is invalid
+            placeholder.classList.remove('hidden'); // Show the placeholder
+            container.classList.remove('image-selected'); // Remove selected image styles
+        }
     }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    const alertMessage = /*[[${alert}]]*/ ''; // Get alert message from model
+    const alertMessage = /*[[${alertMessage}]]*/ '';
 
     if (alertMessage) {
-        alert(alertMessage); // Show an alert based on the message
+        alert(alertMessage); 
     }
 });

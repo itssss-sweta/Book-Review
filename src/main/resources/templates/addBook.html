@@ -29,7 +29,7 @@
                     <form th:action="@{/post-book}" method="POST" enctype="multipart/form-data">
                         <div class="form-row">
                             <div class="image-upload-container" onclick="document.getElementById('image-upload').click()">
-                                <input type="file" id="image-upload" accept="image/*" name="imageFile" onchange="previewImage(event)" hidden>
+                                <input type="file" id="image-upload" accept=".jpg, .jpeg" name="imageFile" onchange="previewImage(event)" hidden >
                                 <div id="image-content">
                                     <img id="image-preview" class="image-preview" src="" alt="">
                                     <div id="image-placeholder" class="image-placeholder">
@@ -37,6 +37,10 @@
                                         <p>Upload an image</p>
                                     </div>
                                 </div>
+                                <!-- Note for accepted formats -->
+                                <p id="file-format-note" style="color: red; font-size: 12px; display: none;">
+                                    Only .jpg and .jpeg formats are allowed.
+                                </p>
                             </div>
                     
                             <div class="form-group book-name-container">
@@ -138,5 +142,6 @@
             </div>
         </div>
     </div>
+</div>
 </body>
 </html>
