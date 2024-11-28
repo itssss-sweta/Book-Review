@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,13 +30,10 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/books")
 public class BookController {
 
-  final BookService bookService;
-  final GenreService genreService;
-
-  public BookController(BookService bookService, GenreService genreService) {
-    this.bookService = bookService;
-    this.genreService = genreService;
-  }
+  @Autowired
+  private BookService bookService;
+  @Autowired
+  private GenreService genreService;
 
   @GetMapping
   public ResponseEntity<ResponseModel<List<Book>>> getAllBooks() {
@@ -45,10 +43,6 @@ public class BookController {
   @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
   public ResponseEntity<ResponseModel<Book>> createBook(@Valid @RequestPart("book") BookDto book,
       @RequestPart("imageFile") MultipartFile imageFile, @RequestParam("genreIds") List<Long> genreIds) {
-    System.out.println("POSTING");
-    if (imageFile != null)
-      System.out.println(imageFile);
-    System.out.println(book);
     return bookService.postBook(book, imageFile, genreIds);
   }
 
