@@ -26,7 +26,7 @@
                 <h1>Add New Book</h1>
             </div>
             <div class="form-container">
-                    <form th:action="@{/post-book}" method="POST" enctype="multipart/form-data">
+                    <form id="bookForm" method="POST" enctype="multipart/form-data">
                         <div class="form-row">
                             <div class="image-upload-container" onclick="document.getElementById('image-upload').click()">
                                 <input type="file" id="image-upload" accept=".jpg, .jpeg" name="imageFile" onchange="previewImage(event)" hidden >
@@ -139,6 +139,7 @@
                             <button type="submit" class="btn btn-primary">Add Book</button>
                       </div>
                 </form>
+                <div id="responseMessage"></div>
             </div>
         </div>
     </div>

@@ -81,10 +81,53 @@ function previewImage(event) {
     }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    const alertMessage = /*[[${alertMessage}]]*/ '';
 
-    if (alertMessage) {
-        alert(alertMessage); 
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("bookForm");
+    if (form) {
+        form.addEventListener("submit", function (e) {
+            e.preventDefault(); // Prevent default form submission
+            console.log("POSTING");
+
+            // Clear any existing response messages
+            const responseMessageDiv = document.getElementById("responseMessage");
+            if (responseMessageDiv) responseMessageDiv.innerHTML = "";
+
+            // Create an XMLHttpRequest object
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/post-book", true);
+
+            // Set up a handler for the response
+            xhr.onload = function () {
+                const contentType = xhr.getResponseHeader("Content-Type");
+                let response;
+
+                try {
+                    response = JSON.parse(xhr.responseText);
+                    console.log("Response parsed:", response);
+            
+                    if (response.success) {
+                        document.getElementById('responseMessage').innerHTML = `<div class="success">${response.message}</div>`;
+                        window.location.href = "/dashboard";
+                    } else {
+                        document.getElementById('responseMessage').innerHTML = `<div class="error">${response.message}</div>`;
+                    }
+                } catch (error) {
+                    console.error("Failed to parse JSON response:",error);
+                    document.getElementById('responseMessage').innerHTML = `<div class="error">Invalid server response. Please try again.</div>`;
+                }
+            };
+
+            // Handle network errors
+            xhr.onerror = function () {
+                responseMessageDiv.innerHTML = `<div class="error">Network error occurred. Please try again later.</div>`;
+            };
+
+            // Collect the form data
+            const formData = new FormData(form);
+            xhr.send(formData); // Send the request with the form data
+        });
+    } else {
+        console.error("Form with ID 'bookForm' not found");
     }
 });

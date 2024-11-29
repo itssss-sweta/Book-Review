@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import com.example.demo.model.ResponseModel;
 import com.example.demo.service.AuthenticationService;
 import com.example.demo.service.BookService;
 import com.example.demo.service.GenreService;
+import com.example.demo.utils.ResponseUtil;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -87,7 +89,7 @@ public class ViewController {
     }
 
     @PostMapping("/post-book")
-    public String addBook(
+    public ResponseEntity<ResponseModel<Map<String, Object>>> addBook(
             @Valid @ModelAttribute BookDto bookDto,
             @RequestParam("imageFile") MultipartFile imageFile,
             @RequestParam("genres") String genres, Model model) {
@@ -96,19 +98,20 @@ public class ViewController {
         String errorMessage = validateImageFile(imageFile, model);
         if (errorMessage != null) {
             System.out.println(errorMessage);
-            model.addAttribute("alert", errorMessage); // Set alert message
-            return "addBook"; // Return to the form view if validation fails
+            model.addAttribute("alert", errorMessage);
+            return ResponseUtil.badRequestResponse(errorMessage);
         }
         List<Long> genreIds = Arrays.stream(genres.split(","))
                 .map(Long::parseLong)
                 .collect(Collectors.toList());
         var response = bookService.postBook(bookDto, imageFile, genreIds);
         if (response.getStatusCode().is2xxSuccessful()) {
-            return "dashboard";
+            return ResponseUtil.createdResponse(null, response.getBody().getMessage());
+
         }
         model.addAttribute("alertMessage", response.getBody().getMessage());
         model.addAttribute("alertTitle", "Book Upload!");
-        return "addBook";
+        return ResponseUtil.badRequestResponse(response.getBody().getMessage());
     }
 
     private String validateImageFile(MultipartFile imageFile, Model model) {
