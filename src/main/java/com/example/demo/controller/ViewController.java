@@ -98,7 +98,6 @@ public class ViewController {
         String errorMessage = validateImageFile(imageFile, model);
         if (errorMessage != null) {
             System.out.println(errorMessage);
-            model.addAttribute("alert", errorMessage);
             return ResponseUtil.badRequestResponse(errorMessage);
         }
         List<Long> genreIds = Arrays.stream(genres.split(","))
@@ -109,26 +108,20 @@ public class ViewController {
             return ResponseUtil.createdResponse(null, response.getBody().getMessage());
 
         }
-        model.addAttribute("alertMessage", response.getBody().getMessage());
-        model.addAttribute("alertTitle", "Book Upload!");
         return ResponseUtil.badRequestResponse(response.getBody().getMessage());
     }
 
     private String validateImageFile(MultipartFile imageFile, Model model) {
-        model.addAttribute("alertTitle", "Image Upload!");
 
         if (imageFile.isEmpty()) {
-            model.addAttribute("alertMessage", "Please upload an image.");
             return "Please upload an image.";
         }
         String fileType = imageFile.getContentType();
         if (fileType == null || (!fileType.equals("image/jpeg") && !fileType.equals("image/jpg"))) {
-            model.addAttribute("alertMessage", "Only .jpg and .jpeg image files are allowed.");
             return "Only .jpg and .jpeg image files are allowed.";
         }
         long maxSize = 50 * 1024 * 1024; // 5 MB
         if (imageFile.getSize() > maxSize) {
-            model.addAttribute("alertMessage", "The file size exceeds the 50MB limit.");
             return "The file size exceeds the 50MB limit.";
         }
         return null;

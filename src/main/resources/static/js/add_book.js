@@ -55,11 +55,9 @@ function previewImage(event) {
     const preview = document.getElementById('image-preview');
     const placeholder = document.getElementById('image-placeholder');
     const container = document.querySelector('.image-upload-container');
-    const note = document.getElementById('file-format-note'); // Error message element
+    const note = document.getElementById('file-format-note');
     
-    // Check if a file is selected and its format
     if (file) {
-        // Check if the file is a .jpg or .jpeg image
         if (file.type === 'image/jpeg' || file.name.endsWith('.jpg')) {
             const reader = new FileReader();
             reader.onload = function (e) {
@@ -68,15 +66,14 @@ function previewImage(event) {
                 preview.style.opacity = '1';
                 placeholder.classList.add('hidden');
                 container.classList.add('image-selected');
-                note.style.display = 'none'; // Hide the error note if the format is valid
+                note.style.display = 'none';
             };
             reader.readAsDataURL(file);
         } else {
-            // Display error message for unsupported file types
             note.style.display = 'block';
-            preview.style.display = 'none'; // Hide the preview if the format is invalid
-            placeholder.classList.remove('hidden'); // Show the placeholder
-            container.classList.remove('image-selected'); // Remove selected image styles
+            preview.style.display = 'none'; 
+            placeholder.classList.remove('hidden'); 
+            container.classList.remove('image-selected'); 
         }
     }
 }
@@ -86,18 +83,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("bookForm");
     if (form) {
         form.addEventListener("submit", function (e) {
-            e.preventDefault(); // Prevent default form submission
+            e.preventDefault(); 
             console.log("POSTING");
 
-            // Clear any existing response messages
-            const responseMessageDiv = document.getElementById("responseMessage");
-            if (responseMessageDiv) responseMessageDiv.innerHTML = "";
-
-            // Create an XMLHttpRequest object
             const xhr = new XMLHttpRequest();
             xhr.open("POST", "/post-book", true);
 
-            // Set up a handler for the response
             xhr.onload = function () {
                 const contentType = xhr.getResponseHeader("Content-Type");
                 let response;
@@ -107,23 +98,20 @@ document.addEventListener("DOMContentLoaded", () => {
                     console.log("Response parsed:", response);
             
                     if (response.success) {
-                        document.getElementById('responseMessage').innerHTML = `<div class="success">${response.message}</div>`;
+                        alert(response.message);
                         window.location.href = "/dashboard";
                     } else {
-                        document.getElementById('responseMessage').innerHTML = `<div class="error">${response.message}</div>`;
+                        alert(response.message);
                     }
                 } catch (error) {
-                    console.error("Failed to parse JSON response:",error);
-                    document.getElementById('responseMessage').innerHTML = `<div class="error">Invalid server response. Please try again.</div>`;
+                    alert("Invalid server response. Please try again.");
                 }
             };
 
-            // Handle network errors
             xhr.onerror = function () {
-                responseMessageDiv.innerHTML = `<div class="error">Network error occurred. Please try again later.</div>`;
+               alert("Network error occurred. Please try again later.");
             };
 
-            // Collect the form data
             const formData = new FormData(form);
             xhr.send(formData); // Send the request with the form data
         });
