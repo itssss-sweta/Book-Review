@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Genre</title>
+    <link rel="stylesheet" href="css/add_genre_style.css"> 
+    <script type="text/javascript" src="js/add_genre.js"></script>
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h2>Admin Panel</h2>
+            <ul>
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="#">Books</a></li>
+                <li><a href="#">Users</a></li>
+                <li><a href="#">Settings</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <div class="header">
+                <h1>Add New Genre</h1>
+            </div>
+            <div class="form-container">
+                <form id="genreForm" method="POST" enctype="multipart/form-data">
+                    <!-- Genre Name Input -->
+                    <div class="form-group">
+                        <label for="genreName">Genre Name</label>
+                        <input type="text" id="genreName" name="genreName" placeholder="Enter genre name" required>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Add Genre</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
