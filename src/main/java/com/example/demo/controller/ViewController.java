@@ -13,10 +13,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.dtos.BookDto;
+import com.example.demo.dtos.GenreDto;
 import com.example.demo.dtos.LoginDto;
 import com.example.demo.model.Genre;
 import com.example.demo.model.LoginResponseModel;
@@ -78,6 +80,11 @@ public class ViewController {
         return "getBooks";
     }
 
+    @GetMapping("/addGenre")
+    public String addGenrePage() {
+        return "addGenre";
+    }
+
     private void getGenres(Model model) {
         ResponseEntity<ResponseModel<List<Genre>>> response = genreService.getAllGenres();
         if (response.getStatusCode().is2xxSuccessful()) {
@@ -112,7 +119,6 @@ public class ViewController {
     }
 
     private String validateImageFile(MultipartFile imageFile, Model model) {
-
         if (imageFile.isEmpty()) {
             return "Please upload an image.";
         }
@@ -125,6 +131,19 @@ public class ViewController {
             return "The file size exceeds the 50MB limit.";
         }
         return null;
+    }
+
+    @PostMapping("/post-genre")
+    public ResponseEntity<ResponseModel<Map<String, Object>>> postGenre(
+            @Valid @RequestBody GenreDto genre, Model model) {
+        System.out.println("Posting Genre");
+        System.out.println(genre.getName());
+        var response = genreService.createGenre(genre);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            return ResponseUtil.createdResponse(null, response.getBody().getMessage());
+
+        }
+        return ResponseUtil.badRequestResponse(response.getBody().getMessage());
     }
 
 }

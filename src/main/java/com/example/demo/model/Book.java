@@ -85,7 +85,6 @@ public class Book {
     private String edition;
 
     @Column(nullable = false)
-    @NotNull(message = "Genres cannot be empty.")
     @ManyToMany
     @JoinTable(name = "book_genres", joinColumns = @JoinColumn(name = "book_id"), inverseJoinColumns = @JoinColumn(name = "genre_id"))
     @JsonManagedReference
