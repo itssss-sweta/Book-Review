@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.dtos.BookDto;
+import com.example.demo.dtos.GenreDto;
 import com.example.demo.model.Book;
 import com.example.demo.model.Genre;
 import com.example.demo.model.ResponseModel;
@@ -58,7 +59,7 @@ public class BookController {
   }
 
   @PostMapping("/genres")
-  public ResponseEntity<ResponseModel<Genre>> addGenre(@RequestBody Genre genre) {
+  public ResponseEntity<ResponseModel<Genre>> addGenre(@RequestBody GenreDto genre) {
     return genreService.createGenre(genre);
   }
 

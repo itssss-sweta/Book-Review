@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dtos.GenreDto;
 import com.example.demo.model.Genre;
 import com.example.demo.model.ResponseModel;
 import com.example.demo.repository.GenreRepository;
@@ -22,7 +23,7 @@ public class GenreService {
     }
 
     // Create a new genre
-    public ResponseEntity<ResponseModel<Genre>> createGenre(Genre genreDetail) {
+    public ResponseEntity<ResponseModel<Genre>> createGenre(GenreDto genreDetail) {
         try {
             Genre genre = new Genre();
             genre.setName(genreDetail.getName());
