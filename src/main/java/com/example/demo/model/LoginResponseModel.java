@@ -6,8 +6,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class LoginResponseModel {
     private String token;
 
+    private String refreshToken;
+
     @JsonIgnore
     private long expiresIn;
+
     private UserDto userModel;
 
     public String getToken() {
@@ -22,8 +25,17 @@ public class LoginResponseModel {
         return userModel;
     }
 
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
     public LoginResponseModel setToken(String token) {
         this.token = token;
+        return this;
+    }
+
+    public LoginResponseModel setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
         return this;
     }
 

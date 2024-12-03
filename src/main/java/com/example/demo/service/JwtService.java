@@ -11,15 +11,24 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.model.UserModel;
+
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
 @Service
 public class JwtService {
-    @Value("${security.jwt.secret-key}")
+
+    public final long REFRESH_TOKEN_EXPIRATION_TIME = 7 * 24 * 60 * 60 * 1000;
+
+    @Value("${security.jwt.access-token.secret-key}")
     private String secretKey;
+
+    @Value("${security.jwt.refresh-token.secret-key}")
+    private String refreshSecretKey;
 
     @Value("${security.jwt.expiration-time}")
     private long jwtExpiration;
@@ -84,6 +93,34 @@ public class JwtService {
     private SecretKey getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    private SecretKey getRefreshTokenKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(refreshSecretKey);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public String generateRefreshToken(UserModel user) {
+        return Jwts
+                .builder()
+                .subject(user.getEmail())
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION_TIME))
+                .signWith(getRefreshTokenKey())
+                .compact();
+
+    }
+
+    public String validateRefreshToken(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .verifyWith(getRefreshTokenKey()).build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+            return claims.getSubject();
+        } catch (JwtException e) {
+            return null;
+        }
     }
 
 }

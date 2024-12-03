@@ -73,10 +73,9 @@ public class AuthenticationService {
                     .orElse(null);
 
             if (user != null && passwordEncoder.matches(input.getPassword(), user.getPassword())) {
-                // Generate the JWT token
                 String jwtToken = jwtService.generateToken(user);
+                String refreshToken = jwtService.generateRefreshToken(user);
 
-                // Map UserModel to UserDto (remove sensitive fields like password)
                 UserDto userDto = new UserDto();
                 userDto.setUid(user.getUid());
                 userDto.setFullName(user.getFullName());
@@ -84,13 +83,10 @@ public class AuthenticationService {
                 userDto.setCreatedAt(user.getCreatedAt());
                 userDto.setUpdatedAt(user.getUpdatedAt());
 
-                // Prepare the login response
                 LoginResponseModel loginResponseModel = new LoginResponseModel()
                         .setToken(jwtToken)
                         .setExpiresIn(jwtService.getExpirationTime())
-                        .setUserModel(userDto); // Set UserDto, not UserModel
-
-                // Return success response
+                        .setUserModel(userDto).setRefreshToken(refreshToken);
                 return ResponseUtil.successResponse(loginResponseModel, "Login successful!");
             }
 
