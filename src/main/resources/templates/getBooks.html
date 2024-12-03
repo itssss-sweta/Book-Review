@@ -3,9 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Books</title>
+    <title>Book List</title>
+    <link rel="stylesheet" th:href="@{/css/book_list_style.css}" />
 </head>
 <body>
-    <h1>Get Books</h1>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h2>Library</h2>
+            <ul>
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="#">Books</a></li>
+                <li><a href="#">Genres</a></li>
+                <li><a href="#">Settings</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1>Book List</h1>
+            </div>
+
+            <div class="form-container">
+                <div class="book-list">
+                    <!-- Dynamically Render Book Items -->
+                    <div th:each="book : ${books}" class="book-item">
+                        <div class="book-image">
+                            <img th:src="${book.imageUrl}" alt="Book Cover">
+                        </div>
+                        <div class="book-details">
+                            <h3 class="book-title" th:text="${book.bookTitle}">Book Title</h3>
+                            <p class="book-author" th:text="'by ' + ${book.authorName}">by Author Name</p>
+                            <p class="book-info" th:text="'Published: ' + ${book.publicationYear}">Published: 2023</p>
+                            <p class="book-genres">
+                                Genres:
+                                <span th:each="genre, iter : ${book.genres}">
+                                    <span th:text="${genre.name}"></span>
+                                    <span th:if="${!iter.last}"> | </span>
+                                </span>
+                            </p>
+                        </div>
+                        <!-- Add Update and Delete buttons -->
+                        <div class="book-actions">
+                            <button class="update-btn">Update</button>
+                            <button class="delete-btn">Delete</button>
+                        </div>
+                    </div>
+                    <!-- If no books are found -->
+                    <p th:if="${#lists.isEmpty(books)}">No books available.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
