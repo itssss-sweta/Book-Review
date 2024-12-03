@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.demo.dtos.BookDto;
 import com.example.demo.dtos.GenreDto;
 import com.example.demo.dtos.LoginDto;
+import com.example.demo.model.Book;
 import com.example.demo.model.Genre;
 import com.example.demo.model.LoginResponseModel;
 import com.example.demo.model.ResponseModel;
@@ -76,7 +77,8 @@ public class ViewController {
     }
 
     @GetMapping("/getBooks")
-    public String getBooksPage() {
+    public String getBooksPage(Model model) {
+        getBooks(model);
         return "getBooks";
     }
 
@@ -144,6 +146,17 @@ public class ViewController {
 
         }
         return ResponseUtil.badRequestResponse(response.getBody().getMessage());
+    }
+
+    private void getBooks(Model model) {
+        ResponseEntity<ResponseModel<List<Book>>> response = bookService.getBook();
+        if (response.getStatusCode().is2xxSuccessful()) {
+            List<Book> books = response.getBody().getData();
+            System.out.println("BOOKS : " + books);
+            model.addAttribute("books", books);
+        } else {
+            model.addAttribute("books", new ArrayList<>());
+        }
     }
 
 }
