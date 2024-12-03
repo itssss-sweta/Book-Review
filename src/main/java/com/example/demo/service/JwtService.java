@@ -58,7 +58,6 @@ public class JwtService {
             Map<String, Object> extraClaims,
             UserDetails userDetails,
             long expiration) {
-
         return Jwts
                 .builder().claims().empty().add(extraClaims).and()
                 .subject(userDetails.getUsername())
@@ -95,18 +94,13 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    private SecretKey getRefreshTokenKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(refreshSecretKey);
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
-
     public String generateRefreshToken(UserModel user) {
         return Jwts
                 .builder()
                 .subject(user.getEmail())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION_TIME))
-                .signWith(getRefreshTokenKey())
+                .signWith(getSignInKey())
                 .compact();
 
     }
@@ -114,7 +108,7 @@ public class JwtService {
     public String validateRefreshToken(String token) {
         try {
             Claims claims = Jwts.parser()
-                    .verifyWith(getRefreshTokenKey()).build()
+                    .verifyWith(getSignInKey()).build()
                     .parseSignedClaims(token)
                     .getPayload();
             return claims.getSubject();

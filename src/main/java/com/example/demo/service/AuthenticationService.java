@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.demo.dtos.LoginDto;
 import com.example.demo.dtos.RegisterDto;
+import com.example.demo.dtos.TokenDto;
 import com.example.demo.dtos.UserDto;
 import com.example.demo.model.LoginResponseModel;
 import com.example.demo.model.ResponseModel;
+import com.example.demo.model.TokenRefreshResponseModel;
 import com.example.demo.model.UserModel;
 import com.example.demo.repository.AuthenticationRepository;
 import com.example.demo.utils.ResponseUtil;
@@ -89,12 +91,35 @@ public class AuthenticationService {
                         .setUserModel(userDto).setRefreshToken(refreshToken);
                 return ResponseUtil.successResponse(loginResponseModel, "Login successful!");
             }
-
             return ResponseUtil
                     .notFoundResponse(String.format("User with the email '%s' doesn/'t' exists.", input.getEmail()));
 
         } catch (BadCredentialsException e) {
             return ResponseUtil.unauthorizedResponse("Invalid Credentials!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseUtil.serverErrorResponse("An error occurred while logging in: " + e.getMessage());
+        }
+    }
+
+    public ResponseEntity<ResponseModel<TokenRefreshResponseModel>> genereateAccessToken(
+            @RequestBody TokenDto tokenDto) {
+        try {
+            String refreshToken = tokenDto.getRefreshToken();
+
+            if (jwtService.validateRefreshToken(refreshToken) != null) {
+                String email = jwtService.extractUsername(refreshToken);
+                UserModel user = userRepository.findByEmail(email)
+                        .orElseThrow(() -> new RuntimeException("User not found"));
+                String newAccessToken = jwtService.generateToken(user);
+                TokenRefreshResponseModel response = new TokenRefreshResponseModel()
+                        .setAccessToken(newAccessToken)
+                        .setRefreshToken(refreshToken);
+
+                return ResponseUtil.successResponse(response, "Token refreshed successfully.");
+            } else {
+                return ResponseUtil.unauthorizedResponse("Invalid refresh token");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseUtil.serverErrorResponse("An error occurred while logging in: " + e.getMessage());

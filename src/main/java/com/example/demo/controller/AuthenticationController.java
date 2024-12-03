@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dtos.LoginDto;
 import com.example.demo.dtos.RegisterDto;
+import com.example.demo.dtos.TokenDto;
 import com.example.demo.dtos.UserDto;
 import com.example.demo.model.LoginResponseModel;
 import com.example.demo.model.ResponseModel;
+import com.example.demo.model.TokenRefreshResponseModel;
 import com.example.demo.service.AuthenticationService;
 
 import jakarta.validation.Valid;
@@ -33,5 +35,11 @@ public class AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity<ResponseModel<LoginResponseModel>> login(@Valid @RequestBody LoginDto credentials) {
         return authenticationService.login(credentials);
+    }
+
+    @PostMapping("/generate-access-token")
+    public ResponseEntity<ResponseModel<TokenRefreshResponseModel>> generateAccessToken(
+            @Valid @RequestBody TokenDto token) {
+        return authenticationService.genereateAccessToken(token);
     }
 }
