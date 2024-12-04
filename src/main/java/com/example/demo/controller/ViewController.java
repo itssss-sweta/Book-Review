@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -146,6 +148,23 @@ public class ViewController {
 
         }
         return ResponseUtil.badRequestResponse(response.getBody().getMessage());
+    }
+
+    @DeleteMapping("/delete-book/{bookId}")
+    public ResponseEntity<ResponseModel<Book>> deleteBook(
+            @PathVariable("bookId") long bookId) { // Bind bookId from the URL path
+        if (bookId <= 0) {
+            return ResponseUtil.badRequestResponse("Invalid book ID provided.");
+        }
+
+        ResponseEntity<ResponseModel<Book>> response = bookService.deleteBook(bookId);
+
+        if (response.getStatusCode().is2xxSuccessful()) {
+            return ResponseUtil.createdResponse(response.getBody().getData(), "Successfully deleted the book.");
+        } else {
+            return ResponseUtil.badRequestResponse(response.getBody().getMessage());
+
+        }
     }
 
     private void getBooks(Model model) {

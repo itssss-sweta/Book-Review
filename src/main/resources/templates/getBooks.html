@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book List</title>
     <link rel="stylesheet" th:href="@{/css/book_list_style.css}" />
+    <script type="text/javascript" src="js/get_books.js"></script>
+
 </head>
 <body>
     <div class="wrapper">
@@ -46,8 +48,8 @@
                         </div>
                         <!-- Add Update and Delete buttons -->
                         <div class="book-actions">
-                            <button class="update-btn">Update</button>
-                            <button class="delete-btn">Delete</button>
+                            <button type="button" class="update-btn" th:data-book-id="${book.id}">Update</button>
+                            <button type="button" class="delete-btn" th:data-book-id="${book.id}">Delete</button>
                         </div>
                     </div>
                     <!-- If no books are found -->
