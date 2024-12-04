@@ -24,11 +24,8 @@ public class JwtService {
 
     public final long REFRESH_TOKEN_EXPIRATION_TIME = 7 * 24 * 60 * 60 * 1000;
 
-    @Value("${security.jwt.access-token.secret-key}")
+    @Value("${security.jwt.secret-key}")
     private String secretKey;
-
-    @Value("${security.jwt.refresh-token.secret-key}")
-    private String refreshSecretKey;
 
     @Value("${security.jwt.expiration-time}")
     private long jwtExpiration;
