@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpEntity;
@@ -87,7 +88,7 @@ public class BookService {
         }
     }
 
-    public String uploadImageToExternalApi(MultipartFile imageFile) {
+    private String uploadImageToExternalApi(MultipartFile imageFile) {
         try {
             byte[] imageData = imageFile.getBytes();
 
@@ -112,16 +113,16 @@ public class BookService {
             HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
             // Create a RestTemplate and send the request
-            ResponseEntity<Map> responseEntity = restTemplate.exchange(
+            ResponseEntity<Map<String, Object>> responseEntity = restTemplate.exchange(
                     "https://api.imghippo.com/v1/upload",
                     HttpMethod.POST,
                     requestEntity,
-                    Map.class);
+                    new ParameterizedTypeReference<Map<String, Object>>() {
 
-            // Process the response
+                    });
+
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
                 var responseBody = responseEntity.getBody();
-                System.out.println(responseBody);
                 if (responseBody != null && responseBody.containsKey("data")) {
                     System.out.println("Data:" + responseBody.get("data"));
                     Map<String, Object> data = (Map<String, Object>) responseBody.get("data");
@@ -135,6 +136,44 @@ public class BookService {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    private boolean deleteImageFromExternalApi(String imageUrl) {
+        try {
+
+            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+
+            body.add("api_key", apiKey);
+            body.add("url", imageUrl);
+
+            HttpHeaders headers = new HttpHeaders();
+            System.out.println("Deleting");
+
+            // Create a request entity with the body and headers
+            HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
+            // Create a RestTemplate and send the request
+            ResponseEntity<Map<String, Object>> responseEntity = restTemplate.exchange(
+                    "https://api.imghippo.com/v1/delete",
+                    HttpMethod.DELETE,
+                    requestEntity,
+                    new ParameterizedTypeReference<Map<String, Object>>() {
+                    });
+            System.out.println("Deleted:" + responseEntity.getStatusCode());
+
+            // Process the response
+            if (responseEntity.getStatusCode() == HttpStatus.OK) {
+                var responseBody = responseEntity.getBody();
+                System.out.println(responseBody);
+                if (responseBody != null && responseBody.containsKey("deleted_url")) {
+                    return true;
+                }
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
@@ -161,8 +200,14 @@ public class BookService {
             Optional<Book> bookWithId = bookRepository.findById(id);
 
             if (bookWithId.isPresent()) {
-                bookRepository.deleteById(id);
-                return ResponseUtil.successResponse(null, "Successfully deleted the book.");
+                Book book = bookWithId.get();
+                String imageUrl = book.getImageUrl();
+                boolean isImageDeleted = deleteImageFromExternalApi(imageUrl);
+                if (isImageDeleted) {
+                    bookRepository.deleteById(id);
+                    return ResponseUtil.successResponse(null, "Successfully deleted the book.");
+                }
+                return ResponseUtil.badRequestResponse("An error occured while deleting image.");
             } else {
                 return ResponseUtil.notFoundResponse("Book not found with ID " + id);
             }
