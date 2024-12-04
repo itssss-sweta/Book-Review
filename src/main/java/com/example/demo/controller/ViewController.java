@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -93,6 +94,7 @@ public class ViewController {
         ResponseEntity<ResponseModel<List<Genre>>> response = genreService.getAllGenres();
         if (response.getStatusCode().is2xxSuccessful()) {
             List<Genre> genres = response.getBody().getData();
+            genres.sort(Comparator.comparing(Genre::getName));
             model.addAttribute("genres", genres);
         } else {
             model.addAttribute("genres", new ArrayList<>());
