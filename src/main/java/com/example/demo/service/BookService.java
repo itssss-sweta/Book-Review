@@ -24,6 +24,7 @@ import com.example.demo.dtos.BookDto;
 import com.example.demo.model.Book;
 import com.example.demo.model.Genre;
 import com.example.demo.model.ResponseModel;
+import com.example.demo.model.UserModel;
 import com.example.demo.repository.BookRepository;
 import com.example.demo.repository.GenreRepository;
 import com.example.demo.utils.ResponseUtil;
@@ -201,6 +202,11 @@ public class BookService {
 
             if (bookWithId.isPresent()) {
                 Book book = bookWithId.get();
+                for (UserModel user : book.getFavoritedByUsers()) {
+                    user.getFavouriteBooks().remove(book);
+                }
+                book.getFavoritedByUsers().clear();
+
                 String imageUrl = book.getImageUrl();
                 boolean isImageDeleted = deleteImageFromExternalApi(imageUrl);
                 if (isImageDeleted) {
