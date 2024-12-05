@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Genres Management</title>
   <link rel="stylesheet" th:href="@{css/get_genre_style.css}">
+  <script type="text/javascript" src="js/get_genre.js"></script>
+
 </head>
 <body>
     <div class="wrapper">
@@ -28,17 +30,17 @@
         <div class="form-container">
           <div class="genre-list">
             <div th:each="genre : ${genres}" class="genre-item">
-                    <div class="genre-name-container">
-                        <span class="genre-name" th:text="${genre.name}">Genre</span>
-                    </div>
-                    <div class="actions">
-                        <button type="button" class="btn update" >Update</button>
-                        <button type="button" class="btn delete" >Delete</button>
-                    </div>
+                <div class="genre-name-container">
+                    <span class="genre-name" th:text="${genre.name}">Genre</span>
                 </div>
+                <div class="actions">
+                    <button type="button" class="btn update" th:data-genre-id="${genre.genreId}">Update</button>
+                    <button type="button" class="btn delete" th:data-genre-id="${genre.genreId}">Delete</button>
+                </div>
+              </div>
             </div>
         </div>
       </div>
     </div>
-  </body>
-  </html>
+</body>
+</html>

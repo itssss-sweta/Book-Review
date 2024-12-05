@@ -2,15 +2,15 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.addEventListener('click', function (event) {
         console.log("Clicked element:", event.target);
 
-        if (event.target && event.target.classList.contains('delete-btn')) {
+        if (event.target && event.target.classList.contains('delete')) {
             const deleteButton = event.target;
-            const bookId = deleteButton.getAttribute('data-book-id');
+            const genreId = deleteButton.getAttribute('data-genre-id');
 
-            if (bookId) {
-                if (confirm('Are you sure you want to delete this book?')) {
+            if (genreId) {
+                if (confirm('Are you sure you want to delete this genre?')) {
                     const xhr = new XMLHttpRequest();
 
-                    xhr.open('DELETE', `/delete-book/${bookId}`, true);
+                    xhr.open('DELETE', `/delete-genre/${genreId}`, true);
 
                     xhr.onload = function () {
                         console.log("Request finished with status:", xhr.status);
@@ -21,30 +21,30 @@ document.addEventListener("DOMContentLoaded", () => {
                             console.log("Response parsed:", response);
 
                             if (response.success) {
-                                // Set flag in sessionStorage to indicate success
-                                sessionStorage.setItem('delete_book_success', 'true');
-                                location.reload(); // Reload the page after successful deletion
+                                sessionStorage.setItem('delete_genre_success', 'true');
+                                location.reload();
                             } else {
-                                showAlert('Error', response.message, 'error'); // Show error alert box
+                                showAlert('Error', response.message, 'error'); 
                             }
                         } catch (error) {
                             showAlert('Error', "Invalid server response. Please try again.", 'error');
                         }
                     };
-
+                    
                     // Send the request
                     xhr.send();
                 }
             } else {
-                console.error("Book ID not found on delete button.");
+                console.error("Genre ID not found on delete button.");
+                showAlert('Error', "IGenre ID not found. Please try again.", 'error');
             }
         }
     });
 
     // Show success or error alert box after reload
-    if (sessionStorage.getItem('delete_book_success') === 'true') {
-        showAlert('Success', 'The book has been successfully deleted.', 'success');
-        sessionStorage.removeItem('delete_book_success'); // Reset the flag after showing the alert
+    if (sessionStorage.getItem('delete_genre_success') === 'true') {
+        showAlert('Success', 'The genre has been successfully deleted.', 'success');
+        sessionStorage.removeItem('delete_genre_success'); 
     }
 });
 
@@ -58,19 +58,17 @@ function showAlert(title, message, type) {
     alertBox.appendChild(titleElement);
 
     const messageElement = document.createElement('p');
-    messageElement.textContent = message;
+    messageElement.textContent = message; 
     alertBox.appendChild(messageElement);
 
     document.body.appendChild(alertBox);
 
-    // Show the alert box immediately
     setTimeout(() => {
         alertBox.classList.add('show');
     }, 10); 
 
-    // Hide the alert box after 5 seconds
     setTimeout(() => {
         alertBox.classList.remove('show');
         alertBox.remove();
-    }, 5000); // Alert stays for 5 seconds
+    }, 5000);
 }

@@ -160,7 +160,7 @@ public class ViewController {
 
     @DeleteMapping("/delete-book/{bookId}")
     public ResponseEntity<ResponseModel<Book>> deleteBook(
-            @PathVariable("bookId") long bookId) { // Bind bookId from the URL path
+            @PathVariable("bookId") long bookId) {
         if (bookId <= 0) {
             return ResponseUtil.badRequestResponse("Invalid book ID provided.");
         }
@@ -186,4 +186,16 @@ public class ViewController {
         }
     }
 
+    @DeleteMapping("/delete-genre/{genreId}")
+    public ResponseEntity<ResponseModel<Genre>> removeGenre(@PathVariable("genreId") long genreId) {
+        if (genreId <= 0) {
+            return ResponseUtil.badRequestResponse("Invalid book ID provided.");
+        }
+        ResponseEntity<ResponseModel<Genre>> response = genreService.deleteGenreById(genreId);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            return ResponseUtil.createdResponse(response.getBody().getData(), "Successfully deleted the book.");
+        } else {
+            return ResponseUtil.badRequestResponse(response.getBody().getMessage());
+        }
+    }
 }
