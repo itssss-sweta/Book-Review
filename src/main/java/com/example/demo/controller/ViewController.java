@@ -90,6 +90,12 @@ public class ViewController {
         return "addGenre";
     }
 
+    @GetMapping("/viewGenre")
+    public String viewGenrePage(Model model) {
+        getGenres(model);
+        return "viewGenre";
+    }
+
     private void getGenres(Model model) {
         ResponseEntity<ResponseModel<List<Genre>>> response = genreService.getAllGenres();
         if (response.getStatusCode().is2xxSuccessful()) {

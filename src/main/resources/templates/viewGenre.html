@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Genres Management</title>
+  <link rel="stylesheet" th:href="@{css/get_genre_style.css}">
+</head>
+<body>
+    <div class="wrapper">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <ul>
+          <li><a href="/dashboard">Dashboard</a></li>
+          <li><a href="#">Genres</a></li>
+          <li><a href="#">Settings</a></li>
+          <li><a href="#">Logout</a></li>
+        </ul>
+      </div>
+  
+      <!-- Main Content -->
+      <div class="main-content">
+        <div class="header">
+          <h1>Manage Genres</h1>
+        </div>
+        
+        <div class="form-container">
+          <div class="genre-list">
+            <div th:each="genre : ${genres}" class="genre-item">
+                    <div class="genre-name-container">
+                        <span class="genre-name" th:text="${genre.name}">Genre</span>
+                    </div>
+                    <div class="actions">
+                        <button type="button" class="btn update" >Update</button>
+                        <button type="button" class="btn delete" >Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  </html>
