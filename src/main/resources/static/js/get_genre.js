@@ -1,8 +1,11 @@
+let currentlyEditing = false;
+
 document.addEventListener("DOMContentLoaded", () => {
     setupUpdateButtons();
     setupDeleteButtons();
     handleSuccessMessages();
 });
+
 
 // Set up event listeners for update buttons
 function setupUpdateButtons() {
@@ -45,12 +48,12 @@ function handleSuccessMessages() {
 
 // Toggle between view and edit modes
 function toggleUpdate(genreId) {
-    const genreName = document.getElementById('genre-name-' + genreId);
-    const genreInput = document.getElementById('genre-input-' + genreId);
-    const updateBtn = document.querySelector('.btn.update[data-genre-id="' + genreId + '"]');
-    const deleteBtn = document.querySelector('.btn.delete[data-genre-id="' + genreId + '"]');
-
-    if (genreInput.style.display === 'none') {
+    if(!currentlyEditing){
+        currentlyEditing = true;
+        const genreName = document.getElementById('genre-name-' + genreId);
+        const genreInput = document.getElementById('genre-input-' + genreId);
+        const updateBtn = document.querySelector('.btn.update[data-genre-id="' + genreId + '"]');
+        const deleteBtn = document.querySelector('.btn.delete[data-genre-id="' + genreId + '"]');
         genreInput.style.display = 'inline-block';
         genreInput.value = genreName.textContent; 
         genreName.style.display = 'none';
@@ -58,14 +61,6 @@ function toggleUpdate(genreId) {
         deleteBtn.setAttribute('data-action', 'Cancel');
         updateBtn.setAttribute('update-action', 'Done');
         updateBtn.textContent = 'Done';
-    } else {
-        genreName.textContent = genreInput.value;
-        genreInput.style.display = 'none';
-        genreName.style.display = 'inline-block';
-        deleteBtn.textContent = 'Delete';
-        deleteBtn.setAttribute('data-action', 'Delete');
-        updateBtn.setAttribute('update-action', 'Update');
-        updateBtn.textContent = 'Update';
     }
 }
 
@@ -85,6 +80,7 @@ function revertToInitial(genreId,updatedGenreName) {
     deleteBtn.setAttribute('data-action', 'Delete');
     updateBtn.setAttribute('update-action', 'Delete');
     updateBtn.textContent = 'Update';
+    currentlyEditing= false;
 }
 
 // Send update request to server
@@ -119,7 +115,7 @@ function updateGenre(genreId, updatedGenreName) {
 
 // Send delete request to server
 function deleteGenre(genreId) {
-    if (confirm('Are you sure you want to delete this genre?')) {
+    if (!currentlyEditing && confirm('Are you sure you want to delete this genre?')) {
         const xhr = new XMLHttpRequest();
         xhr.open('DELETE', `/delete-genre/${genreId}`, true);
 

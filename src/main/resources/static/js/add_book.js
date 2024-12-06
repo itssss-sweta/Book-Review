@@ -1,4 +1,4 @@
-const selectedGenres = new Set(); // Using a Set to store unique genre IDs
+const selectedGenres = new Set(); 
 
 function updateSelectedGenres() {
     const genreDropdown = document.getElementById("genres");
@@ -6,10 +6,8 @@ function updateSelectedGenres() {
     const selectedGenreText = genreDropdown.options[genreDropdown.selectedIndex].text;
 
     if (selectedGenreId && !selectedGenres.has(selectedGenreId)) {
-        // Add the selected genre ID to the Set
         selectedGenres.add(selectedGenreId);
 
-        // Create and display the selected genre element
         const selectedGenresContainer = document.getElementById("selected-genres");
         const genreElement = document.createElement("div");
         genreElement.classList.add("selected-genre");
@@ -21,7 +19,6 @@ function updateSelectedGenres() {
         selectedGenresContainer.appendChild(genreElement);
     }
 
-    // Update the hidden input field with all selected genre IDs
     updateHiddenInput();
 }
 
@@ -44,7 +41,6 @@ function removeGenre(genreId) {
 }
 
 function updateHiddenInput() {
-    // Join the Set values (genre IDs) into a comma-separated string
     const hiddenInput = document.getElementById("selected-genre-ids");
     hiddenInput.value = Array.from(selectedGenres).join(",");
 }
@@ -113,7 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
             };
 
             const formData = new FormData(form);
-            xhr.send(formData); // Send the request with the form data
+            xhr.send(formData); 
         });
     } else {
         console.error("Form with ID 'bookForm' not found");
