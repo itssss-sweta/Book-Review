@@ -179,6 +179,55 @@ h1 {
     background-color: #d32f2f;
 }
 
+/* General styling for the alert box */
+.alertbox {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 200px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: white;
+    font-family: Arial, sans-serif;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none; /* Ensure it's not clickable */
+    transition: opacity 0.3s ease;
+}
+
+/* Styling for success alert */
+.alertbox.success {
+    background-color: #4CAF50; /* Green */
+}
+
+/* Styling for error alert */
+.alertbox.error {
+    background-color: #f44336; /* Red */
+}
+
+/* Styling for the show class */
+.alertbox.show {
+    opacity: 1;
+    pointer-events: all; /* Allow interaction once visible */
+}
+
+/* Optional: Adjust the content inside the alert */
+.alertbox strong {
+    font-weight: bold;
+}
+
+.alertbox p {
+    margin: 0;
+    padding-top: 5px;
+}
+
+/* Optional: Fade out after 5 seconds */
+.alertbox.show {
+    transition: opacity 0.5s ease;
+}
+
+
 @media (max-width: 768px) {
     .sidebar {
         width: 200px;
