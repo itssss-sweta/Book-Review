@@ -20,9 +20,8 @@
             <li><a href="/viewUsers">Users</a></li>
             <li><a href="#">Settings</a></li>
         </ul>
-    </div>
+      </div>
   
-      <!-- Main Content -->
       <div class="main-content">
         <div class="header">
           <h1>Manage Genres</h1>
@@ -41,6 +40,7 @@
                 </div>
               </div>
             </div>
+            <p th:if="${#lists.isEmpty(genres)}">No Genres available.</p>
         </div>
       </div>
     </div>

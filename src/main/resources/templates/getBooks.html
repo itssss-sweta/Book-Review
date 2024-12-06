@@ -30,7 +30,6 @@
 
             <div class="form-container">
                 <div class="book-list">
-                    <!-- Dynamically Render Book Items -->
                     <div th:each="book : ${books}" class="book-item">
                         <div class="book-image">
                             <img th:src="${book.imageUrl}" alt="Book Cover">
@@ -47,13 +46,11 @@
                                 </span>
                             </p>
                         </div>
-                        <!-- Add Update and Delete buttons -->
                         <div class="book-actions">
                             <button type="button" class="update-btn" th:data-book-id="${book.id}">Update</button>
                             <button type="button" class="delete-btn" th:data-book-id="${book.id}">Delete</button>
                         </div>
                     </div>
-                    <!-- If no books are found -->
                     <p th:if="${#lists.isEmpty(books)}">No books available.</p>
                 </div>
             </div>
