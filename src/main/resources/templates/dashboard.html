@@ -9,12 +9,68 @@
  
 </head>
 <body>
-    <h1>DASHBOARD</h1>
-    <div class="buttons">
-        <button type="button" th:onclick="|window.location.href='/addBook'|">Add Book</button>
-        <button type="button" th:onclick="|window.location.href='/getBooks'|">View Books</button>
-        <button type="button" th:onclick="|window.location.href='/addGenre'|">Add Genre</button>
-        <button type="button" th:onclick="|window.location.href='/viewGenre'|">View Genre</button>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h2>Admin Panel</h2>
+            <ul>
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/getBooks">Books</a></li>
+                <li><a href="/viewGenre">Genres</a></li>
+                <li><a href="/viewUsers">Users</a></li>
+                <li><a href="#">Settings</a></li>
+            </ul>
+            <div class="logout-btn-container">
+                <button class="btn btn-logout">Logout</button>
+            </div>
+        </div>
+        <div class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-container">
+                    <!-- Profile Section -->
+                    <div class="profile-section">
+                        <span class="username">Hello, Admin</span>
+                    </div>
+            
+                    <!-- Notification and Welcome Text Section -->
+                    <div class="welcome-section">
+                        <span class="welcome-message">Welcome to the Admin Dashboard</span>
+                    </div>
+                </div>
+            </header>
+            
+
+            <!-- Welcome Section (Dashboard Overview) -->
+            <div class="dashboard-content">
+               <!-- Dashboard Section (Books Card) -->
+                <div class="card">
+                    <h3>Books</h3>
+                    <div class="buttons-container">
+                        <button class="btn btn-primary" onclick="window.location.href='/addBook'">Add Book</button>
+                        <button class="btn btn-secondary" onclick="window.location.href='/getBooks'">View Books</button>
+                    </div>
+                </div>
+
+                <!-- Dashboard Section (Genres Card) -->
+                <div class="card">
+                    <h3>Genres</h3>
+                    <div class="buttons-container">
+                        <button class="btn btn-primary" onclick="window.location.href='/addGenre'">Add Genre</button>
+                        <button class="btn btn-secondary" onclick="window.location.href='/viewGenre'">View Genres</button>
+                    </div>
+                </div>
+
+                <!-- Dashboard Section (Users Card) -->
+                <div class="card">
+                    <h3>Users</h3>
+                    <div class="buttons-container">
+                        <button class="btn btn-secondary" onclick="window.location.href='/viewUsers'">View Users</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
 </body>
 </html>

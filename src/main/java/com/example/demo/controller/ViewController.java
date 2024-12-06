@@ -96,6 +96,12 @@ public class ViewController {
         return "viewGenre";
     }
 
+    @GetMapping("/viewUsers")
+    public String viewUserPage(Model model) {
+        // getUsers(model);
+        return "users";
+    }
+
     private void getGenres(Model model) {
         ResponseEntity<ResponseModel<List<Genre>>> response = genreService.getAllGenres();
         if (response.getStatusCode().is2xxSuccessful()) {
