@@ -74,6 +74,11 @@ public class BookController {
     return genreService.getGenreById(genreId);
   }
 
+  @PutMapping("/genres/{genreId}")
+  public ResponseEntity<ResponseModel<Genre>> updateGenreById(@PathVariable Long genreId, @RequestBody GenreDto genre) {
+    return genreService.updateGenreById(genreId, genre);
+  }
+
   @DeleteMapping("/genres/{genreId}")
   public ResponseEntity<ResponseModel<Genre>> deleteGenreById(@PathVariable Long genreId) {
     return genreService.deleteGenreById(genreId);

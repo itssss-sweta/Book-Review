@@ -63,6 +63,27 @@ public class GenreService {
         }
     }
 
+    // Update a genre by ID
+    public ResponseEntity<ResponseModel<Genre>> updateGenreById(Long id, GenreDto genreDto) {
+        try {
+            if (genreDto.getName() == null || genreDto.getName().isBlank()) {
+                return ResponseUtil.badRequestResponse("Genre name cannot be empty.");
+            }
+            Genre genre = genreRepository.findById(id)
+                    .orElse(null);
+            if (genre == null) {
+                return ResponseUtil.notFoundResponse("Genre not found with ID:" + id);
+            }
+            genre.setName(genreDto.getName());
+            Genre updatedGenre = genreRepository.save(genre);
+            return ResponseUtil.successResponse(updatedGenre, "Genre Updated Successfully.");
+        } catch (Exception e) {
+            return ResponseUtil
+                    .serverErrorResponse("An error occurred while fetching genre with id: " + id + e.getMessage());
+
+        }
+    }
+
     // Delete a genre by ID
     public ResponseEntity<ResponseModel<Genre>> deleteGenreById(Long id) {
         try {
