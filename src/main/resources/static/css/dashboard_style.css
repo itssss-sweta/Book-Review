@@ -36,6 +36,9 @@ body {
     left: 0;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
 }
 
 .sidebar h2 {
@@ -66,7 +69,6 @@ body {
     background-color: #34495e;
 }
 
-/* Main content area */
 .main-content {
     flex: 1;
     margin-left: 250px;
@@ -77,7 +79,6 @@ body {
     overflow-x: hidden;
 }
 
-/* Header Styles */
 .header {
     background-color: #34495e;
     color: white;
@@ -119,7 +120,6 @@ h1 {
     margin-bottom: 20px;
 }
 
-/* Dashboard Content Layout */
 .dashboard-content {
     display: flex;
     justify-content: space-between;
@@ -148,7 +148,6 @@ h1 {
     gap: 10px;
 }
 
-/* Button styling */
 .btn {
     padding: 12px 20px;
     border-radius: 6px;
@@ -179,23 +178,25 @@ h1 {
 }
 
 .logout-btn-container {
-    margin-top: 20px;
+    margin-top: auto;
 }
 
 .btn-logout {
     width: 100%;
     padding: 12px;
-    background-color: #e74c3c;
+    background-color: #2c3e50;
     color: white;
     font-size: 16px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
+    text-align: start;
+    align-self: self-end;
     transition: background-color 0.3s ease;
 }
 
 .btn-logout:hover {
-    background-color: #c0392b;
+    background-color: #34495e;
 }
 
 @media (max-width: 768px) {
