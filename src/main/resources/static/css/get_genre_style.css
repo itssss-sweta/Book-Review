@@ -129,6 +129,24 @@ h1 {
     flex: 2;
 }
 
+.genre-name-input {
+    display: none; 
+    width: 100%;
+    padding: 10px;
+    font-size: 18px;
+    font-weight: 500;
+    color: #34495e;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+}
+
+.genre-name-input.show {
+    display: inline-block;
+    width: 60%; 
+}
+
 .actions {
     display: flex;
     gap: 10px;

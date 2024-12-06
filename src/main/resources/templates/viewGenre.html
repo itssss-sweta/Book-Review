@@ -32,10 +32,13 @@
           <div class="genre-list">
             <div th:each="genre : ${genres}" class="genre-item">
                 <div class="genre-name-container">
-                    <span class="genre-name" th:text="${genre.name}">Genre</span>
-                </div>
+                  <span class="genre-name" th:id="'genre-name-' + ${genre.genreId}" th:text="${genre.name}">Genre</span>
+                  <input type="text" class="genre-name-input" th:id="'genre-input-' + ${genre.genreId}" th:value="${genre.name}" style="display: none;">
+          
+                
+                  </div>
                 <div class="actions">
-                    <button type="button" class="btn update" th:data-genre-id="${genre.genreId}">Update</button>
+                    <button type="button" class="btn update" th:data-genre-id="${genre.genreId}" th:attr="onclick='toggleUpdate(${genre.genreId})'">Update</button>
                     <button type="button" class="btn delete" th:data-genre-id="${genre.genreId}">Delete</button>
                 </div>
               </div>

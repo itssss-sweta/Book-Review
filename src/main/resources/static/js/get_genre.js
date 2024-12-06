@@ -72,3 +72,36 @@ function showAlert(title, message, type) {
         alertBox.remove();
     }, 5000);
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+    const updateButtons = document.querySelectorAll('.btn.update');
+    updateButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const genreId = button.getAttribute('data-genre-id');
+            toggleUpdate(genreId);
+        });
+    });
+});
+
+
+function toggleUpdate(genreId) {
+    const genreName = document.getElementById('genre-name-' + genreId);
+    const genreInput = document.getElementById('genre-input-' + genreId);
+    const updateBtn = document.querySelector('.btn.update[data-genre-id="' + genreId + '"]');
+    const deleteBtn = document.querySelector('.btn.delete[data-genre-id="' + genreId + '"]');
+    
+    if (genreInput.style.display === 'none') {
+        genreInput.style.display = 'inline-block';  
+        genreName.style.display = 'none'; 
+        deleteBtn.style.display = 'none';  
+        updateBtn.textContent = 'Done';  
+    } else {
+        genreName.textContent = genreInput.value; 
+        genreInput.style.display = 'none';  
+        genreName.style.display = 'inline-block';  
+        deleteBtn.style.display = 'inline-block';  
+        updateBtn.textContent = 'Update';  
+
+        alert('Update Successful');
+    }
+}
