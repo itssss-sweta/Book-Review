@@ -46,6 +46,17 @@ document.addEventListener("DOMContentLoaded", () => {
         showAlert('Success', 'The book has been successfully deleted.', 'success');
         sessionStorage.removeItem('delete_book_success'); // Reset the flag after showing the alert
     }
+    
+    document.body.addEventListener('click', function (event) {
+        console.log("Clicked element:", event.target);
+
+        if (event.target && event.target.classList.contains('update-btn')) {
+            const updateButton = event.target;
+            const bookId = updateButton.getAttribute('data-book-id');
+
+           window.location.href = 'addBook';
+        }
+    });
 });
 
 // Function to show alert box (success or error)
