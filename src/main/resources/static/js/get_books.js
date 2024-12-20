@@ -1,7 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
-    document.body.addEventListener('click', function (event) {
+    document.body.addEventListener('click', (event) => {
         console.log("Clicked element:", event.target);
 
+        // Check if the clicked element is a delete button
         if (event.target && event.target.classList.contains('delete-btn')) {
             const deleteButton = event.target;
             const bookId = deleteButton.getAttribute('data-book-id');
@@ -39,24 +40,25 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.error("Book ID not found on delete button.");
             }
         }
+
+        // Check if the clicked element is an update button
+        if (event.target && event.target.classList.contains('update-btn')) {
+            const updateButton = event.target;
+            const bookId = updateButton.getAttribute('data-book-id');
+
+            if (bookId) {
+                window.location.href = `modifyBook/${bookId}`;
+            } else {
+                window.location.href = 'modifyBook';
+            }
+        }
     });
 
     // Show success or error alert box after reload
     if (sessionStorage.getItem('delete_book_success') === 'true') {
         showAlert('Success', 'The book has been successfully deleted.', 'success');
-        sessionStorage.removeItem('delete_book_success'); // Reset the flag after showing the alert
+        sessionStorage.removeItem('delete_book_success'); 
     }
-    
-    document.body.addEventListener('click', function (event) {
-        console.log("Clicked element:", event.target);
-
-        if (event.target && event.target.classList.contains('update-btn')) {
-            const updateButton = event.target;
-            const bookId = updateButton.getAttribute('data-book-id');
-
-           window.location.href = 'addBook';
-        }
-    });
 });
 
 // Function to show alert box (success or error)
@@ -74,14 +76,12 @@ function showAlert(title, message, type) {
 
     document.body.appendChild(alertBox);
 
-    // Show the alert box immediately
     setTimeout(() => {
         alertBox.classList.add('show');
     }, 10); 
 
-    // Hide the alert box after 5 seconds
     setTimeout(() => {
         alertBox.classList.remove('show');
         alertBox.remove();
-    }, 5000); // Alert stays for 5 seconds
+    }, 5000); 
 }
