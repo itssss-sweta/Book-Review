@@ -192,6 +192,20 @@ public class BookService {
         }
     }
 
+    public ResponseEntity<ResponseModel<Book>> getBookByID(Long bookId) {
+        try {
+            Optional<Book> response = bookRepository.findById(bookId);
+
+            if (response.isEmpty()) {
+                return ResponseUtil.noContentResponse("No book found.");
+            }
+
+            return ResponseUtil.successResponse(response.get(), "Book fetched successfully.");
+        } catch (Exception e) {
+            return ResponseUtil.serverErrorResponse("An error occurred while fetching books: " + e.getMessage());
+        }
+    }
+
     public ResponseEntity<ResponseModel<Book>> deleteBook(long id) {
         try {
             if (id <= 0) {
