@@ -74,10 +74,22 @@ public class ViewController {
         }
     }
 
-    @GetMapping("/addBook")
-    public String addBookPage(Model model) {
+    @GetMapping({ "/modifyBook", "/modifyBook/{bookId}" })
+    public String addOrEditBookPage(@PathVariable(value = "bookId", required = false) Long bookId, Model model) {
         getGenres(model);
-        return "addBook";
+        if (bookId != null) {
+            var response = bookService.getBookByID(bookId);
+            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                Book book = response.getBody().getData();
+                model.addAttribute("book", book);
+            } else {
+                model.addAttribute("book", new Book());
+            }
+        } else {
+            model.addAttribute("book", new Book());
+        }
+        return "modifyBook";
+
     }
 
     @GetMapping("/getBooks")

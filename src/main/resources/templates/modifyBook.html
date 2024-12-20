@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Books</title>
     <link rel="stylesheet" th:href="@{/css/add_book_style.css}">
-    <script type="text/javascript" th:src="@{/js/add_book.js}"></script>
+    <script type="text/javascript" th:src="@{/js/modify_book.js}"></script>
 </head>
 <body>
     <div class="wrapper">
@@ -24,15 +24,21 @@
         <!-- Main Content Area -->
         <div class="main-content">
             <div class="header">
-                <h1>Add New Book</h1>
+                <h1 th:text="${book.id != null && book.id > 0} ? 'Update Book' : 'Add New Book'"></h1>
             </div>
-            <div class="form-container">
+              <div class="form-container">
                     <form id="bookForm" method="POST" enctype="multipart/form-data">
                         <div class="form-row">
                             <div class="image-upload-container" onclick="document.getElementById('image-upload').click()">
                                 <input type="file" id="image-upload" accept=".jpg, .jpeg" name="imageFile" onchange="previewImage(event)" hidden >
                                 <div id="image-content">
-                                    <img id="image-preview" class="image-preview" src="" alt="">
+                                    <!-- Image Preview -->
+                                    <img id="image-preview" class="image-preview" 
+                                         th:src="${book.imageUrl != null && !book.imageUrl.isEmpty() ? book.imageUrl : ''}" 
+                                         th:style="${book.imageUrl != null && !book.imageUrl.isEmpty() ? 'display:block;' : 'display:none;'}" 
+                                         alt="Uploaded Image">
+                                    
+                                    <!-- Placeholder -->
                                     <div id="image-placeholder" class="image-placeholder">
                                         <i class="fas fa-cloud-upload-alt"></i>
                                         <p>Upload an image</p>
@@ -46,7 +52,7 @@
                     
                             <div class="form-group book-name-container">
                                 <label for="bookTitle">Name of Book</label>
-                                <input type="text" id="bookTitle" name="bookTitle" placeholder="Enter book title" required>
+                                <input type="text" id="bookTitle" name="bookTitle" placeholder="Enter book title" th:value="${book.bookTitle}" required>
                             </div>
                         </div>
 
@@ -54,16 +60,21 @@
                             <label for="genres">Select Genre</label>
                             <select id="genres" name="genres" onchange="updateSelectedGenres()">
                                 <option class="disabled-selection" value="" disabled selected>Select Genre</option>
-                                <option th:each="genre : ${genres}" th:value="${genre.genreId}" th:text="${genre.name}"></option>
+                                <option class="disabled-selection" value="" disabled selected>Select Genre</option>
+                                <option th:each="genre : ${genres}"
+                                        th:value="${genre.genreId}" 
+                                        th:text="${genre.name}"  
+                                        th:selected="${book.genres != null} ? ${book.genres.contains(genre)} : false">
+                                </option>
                             </select>
                         </div>
                     
                         <!-- Selected genres container (genres selected by the user will appear here) -->
                         <div class="form-group">
                             <div class="selected-genre-container" id="selected-genres">
-                                <div th:each="selectedGenre : ${selectedGenres}" class="selected-genre">
-                                    <span th:text="${selectedGenre}"></span>
-                                    <span class="remove">x</span>
+                                <div th:each="selectedGenre : ${book.genres}" class="selected-genre">
+                                    <span th:text="${selectedGenre.name}"></span>
+                                    <span class="remove" onclick="removeGenre(this)">x</span>
                                 </div>
                             </div>
                         </div>
@@ -74,19 +85,19 @@
                         <!-- ISBN Number -->
                         <div class="form-group">
                             <label for="isbn">ISBN Number</label>
-                            <input type="number" id="isbn" name="isbn" placeholder="Enter ISBN Number" pattern="\d{10}" title="ISBN must be exactly 10 digits" required>
+                            <input type="number" id="isbn" name="isbn" placeholder="Enter ISBN Number" pattern="\d{10}" title="ISBN must be exactly 10 digits" th:value="${book.isbn}" required>
                         </div>
 
                         <!-- Author Name -->
                         <div class="form-group">
                             <label for="authorName">Author Name</label>
-                            <input type="text" id="authorName" name="authorName" placeholder="Enter author name" required>
+                            <input type="text" id="authorName" name="authorName" placeholder="Enter author name" th:value="${book.authorName}" required>
                         </div>
 
                         <!-- Price -->
                         <div class="form-group">
                             <label for="price">Price ($)</label>
-                            <input type="number" id="price" name="price" step="any" placeholder="$" required>
+                            <input type="number" id="price" name="price" step="any" placeholder="$" th:value="${book.price}" required>
                         </div>
 
                         <!-- Rating -->
@@ -105,40 +116,43 @@
                         <!-- Publisher -->
                         <div class="form-group">
                             <label for="publisher">Publisher</label>
-                            <input type="text" id="publisher" name="publisher" placeholder="Enter publisher name" required>
+                            <input type="text" id="publisher" name="publisher" placeholder="Enter publisher name" th:value="${book.publisher}" required>
                         </div>
 
                         <!-- Publication Year -->
                         <div class="form-group">
                             <label for="publicationYear">Publication Year</label>
                             <select id="publicationYear" name="publicationYear" required>
-                                <option class="disabled-selection" value="" disabled selected>Select Year</option>
-                                <option th:each="i : ${#numbers.sequence(1500, 2080)}" th:value="${i}" th:text="${i}"></option>
+                                <option class="disabled-selection" value="" disabled 
+                                        th:selected="${book.publicationYear == null}">Select Year</option>
+                                <option th:each="i : ${#numbers.sequence(1500, 2080)}" 
+                                        th:value="${i}" 
+                                        th:text="${i}" 
+                                        th:selected="${i == book.publicationYear}"></option>
                             </select>
                         </div>
-
                         <!-- Description -->
                         <div class="form-group">
                             <label for="description">Description</label>
-                            <textarea id="description" name="description" placeholder="Enter book description" required></textarea>
+                            <textarea id="description" name="description" placeholder="Enter book description" th:text="${book.description}" required></textarea>
                         </div>
 
                         <!-- Edition -->
                         <div class="form-group">
                             <label for="edition">Edition</label>
-                            <input type="text" id="edition" name="edition" placeholder="Enter edition" required>
+                            <input type="text" id="edition" name="edition" placeholder="Enter edition" th:value="${book.edition}" required>
                         </div>
 
                         <!-- Page Count -->
                         <div class="form-group">
                             <label for="pageCount">Page Count</label>
-                            <input type="number" id="pageCount" name="pageCount" placeholder="Enter page count" required>
+                            <input type="number" id="pageCount" name="pageCount" placeholder="Enter page count" th:value="${book.pageCount}" required>
                         </div>
 
                         <!-- Submit Button -->
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary">Add Book</button>
-                      </div>
+                            <button type="submit" class="btn btn-primary" th:text="${book.id != null && book.id > 0} ? 'Update Book' : 'Add Book'"></button>
+                        </div>
                 </form>
             </div>
         </div>
