@@ -105,11 +105,22 @@
                             <label for="rating">Rating</label>
                             <select name="rating" id="rating">
                                 <option class="disabled-selection" value="" disabled selected>Select Rating</option>
-                                <option value="1">1.0</option>
-                                <option value="2">2.0</option>
-                                <option value="3">3.0</option>
-                                <option value="4">4.0</option>
-                                <option value="5">5.0</option>
+                                <option value="1" th:selected="${book.rating == 1}">1.0</option>
+                                <option value="2" th:selected="${book.rating == 2}">2.0</option>
+                                <option value="3" th:selected="${book.rating == 3}">3.0</option>
+                                <option value="4" th:selected="${book.rating == 4}">4.0</option>
+                                <option value="5" th:selected="${book.rating == 5}">5.0</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="publicationYear">Publication Year</label>
+                            <select id="publicationYear" name="publicationYear" required>
+                                <option class="disabled-selection" value="" disabled 
+                                        th:selected="${book.publicationYear == null}">Select Year</option>
+                                <option th:each="i : ${#numbers.sequence(1500, 2080)}" 
+                                        th:value="${i}" 
+                                        th:text="${i}" 
+                                        th:selected="${i == book.publicationYear}"></option>
                             </select>
                         </div>
 
