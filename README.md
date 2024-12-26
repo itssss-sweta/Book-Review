@@ -55,24 +55,24 @@ This is the main **Admin Dashboard**, where the admin can see an overview of the
 
 ### Add Book Page
 
-This page allows the admin to add a new book to the database, including details like the title, author, and publication year.
+This page allows the admin to add a new book to the database.
 
 ![Add Book Page](https://github.com/user-attachments/assets/f7e0a64f-8aa1-49a9-ae0b-0c17ce99edae)
 
 ### View Book Page
 
-This page displays the details of a specific book. Admins can view, edit, or delete the book from here.
+This page displays the list of books.
 
 ![View Book Page](https://github.com/user-attachments/assets/12d7f70c-2a41-481b-aae0-f74466830de0)
 
 ### Add Genre Page
 
-Admins can add new genres for books using this page. This allows for organizing books based on their genre.
+Admins can add new genres for books using this page. 
 
 ![Add Genre Page](https://github.com/user-attachments/assets/031e1bbc-4e21-4694-95bc-c2fa86fffff9)
 
 ### View Genre Page
 
-Here, admins can view and manage existing genres. Genres can be edited or deleted as needed.
+Here, admins can view and manage existing genres.
 
 ![View Genre Page](https://github.com/user-attachments/assets/6ef6179e-60cb-41ed-b65c-58be56653e4e)
