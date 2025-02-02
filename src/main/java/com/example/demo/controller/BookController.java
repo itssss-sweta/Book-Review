@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -19,11 +20,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.dtos.BookDto;
 import com.example.demo.dtos.GenreDto;
+import com.example.demo.dtos.ReviewDto;
 import com.example.demo.model.Book;
 import com.example.demo.model.Genre;
 import com.example.demo.model.ResponseModel;
+import com.example.demo.model.Review;
 import com.example.demo.service.BookService;
 import com.example.demo.service.GenreService;
+import com.example.demo.service.ReviewService;
 
 import jakarta.validation.Valid;
 
@@ -35,6 +39,8 @@ public class BookController {
   private BookService bookService;
   @Autowired
   private GenreService genreService;
+  @Autowired
+  private ReviewService reviewService;
 
   @GetMapping
   public ResponseEntity<ResponseModel<List<Book>>> getAllBooks() {
@@ -82,5 +88,12 @@ public class BookController {
   @DeleteMapping("/genres/{genreId}")
   public ResponseEntity<ResponseModel<Genre>> deleteGenreById(@PathVariable Long genreId) {
     return genreService.deleteGenreById(genreId);
+  }
+
+  @PostMapping("/review-book/{bookId}")
+  public ResponseEntity<ResponseModel<Review>> reviewBook(@RequestHeader("Authorization") String token,
+      @PathVariable Long bookId, @RequestBody ReviewDto reviewDto) {
+    String jwtToken = token.substring(7);
+    return reviewService.reviewBook(bookId, reviewDto, jwtToken);
   }
 }

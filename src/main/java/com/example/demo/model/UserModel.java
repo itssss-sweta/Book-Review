@@ -23,6 +23,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -66,6 +67,9 @@ public class UserModel implements UserDetails {
     @Column(name = "updated_at")
     private Date updatedAt;
 
+    @OneToMany(mappedBy = "user")
+    private Set<Review> reviews = new HashSet<>();
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "favourite_books", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "book_id"))
     @JsonIgnore
@@ -102,10 +106,6 @@ public class UserModel implements UserDetails {
     public UserModel setPassword(String password) {
         this.password = password;
         return this;
-    }
-
-    public Set<Book> getFavoriteBooks() {
-        return favouriteBooks;
     }
 
     @Override
